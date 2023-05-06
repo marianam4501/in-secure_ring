@@ -23,4 +23,4 @@ c:
 		./build/mainc 127.0.0.1
 
 clean:
-		$(RM) build/
+		$(RM) build/*

@@ -2,16 +2,22 @@ CC = g++
 CFLAGS = -Wall -g -std=c++11
 
 server: 
-		$(CC) $(CFLAGS) -o server server.hpp
+		$(CC) $(CFLAGS) -o build/server src/server.hpp
 
 client: 
-		$(CC) $(CFLAGS) -o client client.hpp
+		$(CC) $(CFLAGS) -o build/client src/client.hpp
 
-1: 
-		./client
+mains: 
+		$(CC) $(CFLAGS) -o build/mains src/main.cpp
 
-2: 
-		./server
+mainc: 
+		$(CC) $(CFLAGS) -o build/mainc src/mainc.cpp
+
+s: 
+		./build/mains
+
+c: 
+		./build/mainc 127.0.0.1
 
 clean:
-		$(RM) main server client
+		$(RM) build/

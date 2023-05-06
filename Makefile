@@ -1,6 +1,9 @@
 CC = g++
 CFLAGS = -Wall -g -std=c++11
 
+all:
+		$(CC) $(CFLAGS) -o build/server src/server.hpp && $(CC) $(CFLAGS) -o build/server src/server.hpp && $(CC) $(CFLAGS) -o build/mains src/main.cpp && $(CC) $(CFLAGS) -o build/mainc src/mainc.cpp
+
 server: 
 		$(CC) $(CFLAGS) -o build/server src/server.hpp
 

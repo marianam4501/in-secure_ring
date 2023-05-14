@@ -32,7 +32,10 @@ class Client {
         close(sock_);
     }
 
-    void connect(const char* server_address) {
+    void connect(const char* server_address, const long port = 0) {
+        if(port != 0) {
+            server_.sin_port = htons(port);
+        }
         if (inet_pton(AF_INET, server_address, &server_.sin_addr) <= 0) {
             throw std::runtime_error("Invalid address/ Address not supported");
         }
@@ -47,7 +50,7 @@ class Client {
         }
         char buffer[1024] = { 0 };
         int valread = read(sock_, buffer, 1024);
-        printf("%s\n", buffer);
+        // printf("%s\n", buffer);
     }
 };
 

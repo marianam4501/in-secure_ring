@@ -12,25 +12,35 @@
 #include <chrono>
 
 #include "RingComputerSender.hpp"
+#include "RingComputerMiddle.hpp"
+#include "RingComputerReceiver.hpp"
 
-int main(int argc, char* argv[]) {
-    RingComputerSender prueba;
-    prueba.runChannels();
-    return 0;
-}
-
-/*
-void *worker_thread(void *arg)
+void *ringComputerThread(void *arg)
 {
-        printf("This is worker_thread #%ld\n", (long)arg);
-        pthread_exit(NULL);
+    long id = (long)arg;
+    printf("This is ringComputerThread [%ld]\n", (long)arg);
+    if(id == 1) {
+        RingComputerSender sender;
+        sleep(2);
+        sender.runChannels();
+    }
+    if(id == 2) {
+        RingComputerMiddle middle;
+        sleep(1);
+        middle.runChannels();
+    }
+    if(id == 3) {
+        RingComputerReceiver receiver;
+        receiver.runChannels();
+    }
+    pthread_exit(NULL);
 }
 
 int main() {
-    pthread_t my_thread[2];
+    pthread_t my_thread[3];
     long id;
-    for(id = 1; id <= 2; id++) {
-        int ret =  pthread_create(&my_thread[id], NULL, &worker_thread, (void*)id);
+    for(id = 1; id <= 3; id++) {
+        int ret =  pthread_create(&my_thread[id], NULL, &ringComputerThread, (void*)id);
         if(ret != 0) {
             printf("Error: pthread_create() failed\n");
             exit(EXIT_FAILURE);
@@ -39,4 +49,3 @@ int main() {
     pthread_exit(NULL);
     return 0;
 }
-*/

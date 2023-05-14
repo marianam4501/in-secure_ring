@@ -19,7 +19,7 @@ class Server {
     int new_socket_;
     struct sockaddr_in address_;
   public:
-    Server() {
+    Server(const long port = 0) {
         // Creating socket file descriptor
         if ((server_fd_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             throw std::runtime_error("socket failed");
@@ -33,7 +33,11 @@ class Server {
 
         address_.sin_family = AF_INET;
         address_.sin_addr.s_addr = INADDR_ANY;
-        address_.sin_port = htons(PORT);
+        if(port == 0) {
+            address_.sin_port = htons(PORT);
+        } else {
+            address_.sin_port = port;
+        }
 
         // Forcefully attaching socket to the port 8080
         if (bind(server_fd_, (struct sockaddr*)&address_, sizeof(address_)) < 0) {
@@ -55,7 +59,7 @@ class Server {
             throw std::runtime_error("accept");
         }
         char* buffer = new char[1024];
-        const char* hello = " (Respuesta del servidor)";
+        const char* hello = "\t(Respuesta del servidor)";
         int valread = read(new_socket_, buffer, 1024);
         printf("%s\n", buffer);
         send(new_socket_, hello, strlen(hello), 0);

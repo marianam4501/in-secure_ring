@@ -7,19 +7,16 @@ CDCD = -o build/CDCD src/Server.hpp
 EAEA = -o build/EAEA src/EAEA.hpp
 RingComputer = -o build/RingComputer src/RingComputer.hpp
 RingComputerSender = -o build/RingComputerSender src/RingComputerSender.hpp
+RingComputerMiddle = -o build/RingComputerMiddle src/RingComputerMiddle.hpp
+RingComputerReceiver = -o build/RingComputerReceiver src/RingComputerReceiver.hpp
+main = -o build/main src/main.cpp -pthread
 
 all:
 		mkdir -p build && \
-		$(CC) $(CFLAGS) $(Server) && \
-		$(CC) $(CFLAGS) $(Client) && \
-		$(CC) $(CFLAGS) $(CDCD) && \
-		$(CC) $(CFLAGS) $(EAEA) && \
-		$(CC) $(CFLAGS) $(CDCD) && \
-		$(CC) $(CFLAGS) $(RingComputer) && \
-		$(CC) $(CFLAGS) -o build/main src/main.cpp -pthread
+		$(CC) $(CFLAGS) $(main)
 
 main: 
-		$(CC) $(CFLAGS) -o build/main src/main.cpp -pthread
+		$(CC) $(CFLAGS) $(main)
 
 run: 
 		./build/main
@@ -29,3 +26,14 @@ args:
 
 clean:
 		$(RM) build/* && rmdir build && clear
+
+# Al parecer no hace falta compilar todo, solo el main
+#		$(CC) $(CFLAGS) $(Server) && \
+#		$(CC) $(CFLAGS) $(Client) && \
+#		$(CC) $(CFLAGS) $(CDCD) && \
+#		$(CC) $(CFLAGS) $(EAEA) && \
+#		$(CC) $(CFLAGS) $(CDCD) && \
+#		$(CC) $(CFLAGS) $(RingComputer) && \
+#		$(CC) $(CFLAGS) $(RingComputerSender) && \
+#		$(CC) $(CFLAGS) $(RingComputerMiddle) && \
+#		$(CC) $(CFLAGS) $(RingComputerReceiver) && \

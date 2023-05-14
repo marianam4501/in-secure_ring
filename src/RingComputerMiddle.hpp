@@ -1,5 +1,5 @@
-#ifndef RINGCOMPUTERSENDER_HPP
-#define RINGCOMPUTERSENDER_HPP
+#ifndef RINGCOMPUTERMIDDLE_HPP
+#define RINGCOMPUTERMIDDLE_HPP
 
 #include <iostream>
 #include <assert.h>
@@ -13,36 +13,35 @@
 
 #include "RingComputer.hpp"
 
-class RingComputerSender : public RingComputer {
+class RingComputerMiddle : public RingComputer {
   public:
     struct thread_info_t {
         long id;
-        RingComputerSender* myComputer;
+        RingComputerMiddle* myComputer;
     };
 
   private:
     /* Add here message generator */
 
   public:
-    RingComputerSender() {
+    RingComputerMiddle() {
     }
 
-    ~RingComputerSender() {
+    ~RingComputerMiddle() {
     }
 
     void static *runEAEAChannel(void *arg)
     {
         EAEA eaea;
         long id = (long)arg;
-        //printf("\tSender_thread [%ld]\n", id);
+        //printf("\tMiddle_thread [%ld]\n", id);
         if(id == 1) {
-            // run CDCD HERE
-            // eaea.receiveEAEA("127.0.0.1");
+            //eaea.receiveEAEA("127.0.0.1");
+            //eaea.sendEAEA("127.0.0.1", "Mensaje enviado desde canal EAEA");
         }
         if(id == 2) {
-            // generate message
-            printf("\tSender_thread [%ld]\n", id);
-            eaea.sendEAEA("127.0.0.1", "Este mensaje debe llegar hasta receiver");
+            printf("\tMiddle_thread [%ld]\n", id);
+            eaea.receiveSendEAEA("127.0.0.1", 8081);
         }
         pthread_exit(NULL);
     }
@@ -53,7 +52,7 @@ class RingComputerSender : public RingComputer {
         pthread_t my_thread[2];
         long id = 0;
         for(id = 1; id <= 2; id++) {
-            int ret =  pthread_create(&my_thread[id], NULL, &RingComputerSender::runEAEAChannel, (void*)id);
+            int ret =  pthread_create(&my_thread[id], NULL, &RingComputerMiddle::runEAEAChannel, (void*)id);
             if(ret != 0) {
                 printf("Error: pthread_create() failed\n");
                 exit(EXIT_FAILURE);

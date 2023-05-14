@@ -1,3 +1,6 @@
+#ifndef FILEMANAGER_HPP
+#define FILEMANAGER_HPP
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -26,3 +29,5 @@ class FileManager {
     return true;
   }
 };
+
+#endif

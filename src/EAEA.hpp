@@ -26,12 +26,12 @@ class EAEA {
      * Este canal debería encargarse de todas las comprobaciones y demás cosas antes 
      * de enviar el mensaje. Hay que implementar métodos de autenticación y cifrado
     */
-    void sendEAEA(const char* server_address) {
+    void sendEAEA(const char* server_address, const char* message) {
         /* De momento me parece que es apropiado que solo envie el mensaje sin ningún tipo
         de cifrado o autenticación para poder montar el diagrama de interacción  */
         try {
             this->client->connect(server_address);
-            client->send("Hello from client");
+            client->send(message);
         } catch (const std::exception& e) {
             std::cerr << e.what() << std::endl;
         }
@@ -42,7 +42,9 @@ class EAEA {
         de cifrado o autenticación para poder montar el diagrama de interacción  */
         try {
             Server server;
-            server.start();
+            char* message = server.start();
+            printf("[EAEA]: Recibido {%s}", message);
+            free(message);
         } catch (const std::exception& e) {
             std::cerr << e.what() << std::endl;
         }

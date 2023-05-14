@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <stdexcept>
 #include <iostream>
+#include <string>
 
 #define PORT 8080
 
@@ -45,7 +46,7 @@ class Server {
         close(server_fd_);
     }
 
-    void start() {
+    char* start() {
         if (listen(server_fd_, 3) < 0) {
             throw std::runtime_error("listen");
         }
@@ -53,12 +54,12 @@ class Server {
         if ((new_socket_ = accept(server_fd_, (struct sockaddr*)&address_, (socklen_t*)&addrlen)) < 0) {
             throw std::runtime_error("accept");
         }
-        char buffer[1024] = { 0 };
-        const char* hello = "Hello from server";
+        char* buffer = new char[1024];
+        const char* hello = " (Respuesta del servidor)";
         int valread = read(new_socket_, buffer, 1024);
         printf("%s\n", buffer);
         send(new_socket_, hello, strlen(hello), 0);
-        printf("Hello message sent\n");
+        return buffer;
     }
 };
 

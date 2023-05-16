@@ -18,19 +18,21 @@ class RingComputerSender {
   private:
     CDCD* cdcd;
     EAEA* eaea;
+    const char* ip;
 
   public:
-    RingComputerSender(const bool cdcdUp, const bool eaeaUp) {
+    RingComputerSender(const bool cdcdUp, const bool eaeaUp, const char* ip) {
         if (cdcdUp) {
-            this->cdcd = new CDCD();
+            this->cdcd = new CDCD(false, true);
         } else {
             this->cdcd = NULL;
         }
         if (eaeaUp) {
-            this->eaea = new EAEA();
+            this->eaea = new EAEA(false, true);
         } else {
             this->eaea = NULL;
         }
+        this->ip = ip;
     }
 
     ~RingComputerSender() {
@@ -44,6 +46,7 @@ class RingComputerSender {
 
     void static *runEAEAChannel(void *arg)
     {
+        /*
         EAEA eaea;
         long id = (long)arg;
         //printf("\tSender_thread [%ld]\n", id);
@@ -56,6 +59,7 @@ class RingComputerSender {
             printf("\tSender_thread [%ld]\n", id);
             eaea.sendEAEA("127.0.0.1", "Este mensaje debe llegar hasta receiver");
         }
+        */
         pthread_exit(NULL);
     }
 

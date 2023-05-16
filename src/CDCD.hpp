@@ -12,14 +12,26 @@ class CDCD {
     Client *client;
 
   public:
-    CDCD() {
-      this->server = new Server();
-      this->client = new Client();
+    CDCD(const bool serverUp, const bool clientUp) {
+        if(serverUp) {
+            this->server = new Server();
+        } else {
+            this->server = NULL;
+        }
+        if(clientUp) {
+            this->client = new Client();
+        } else {
+            this->client = NULL;
+        }
     }
 
     ~CDCD() {
-      free(this->server);
-      free(this->client);
+        if (this->server != NULL) {
+            free(this->server);
+        }
+        if (this->client != NULL) {
+            free(this->client);
+        }
     }
 
     /**

@@ -22,12 +22,12 @@ class RingComputerReceiver {
   public:
     RingComputerReceiver(const bool cdcdUp, const bool eaeaUp) {
         if (cdcdUp) {
-            this->cdcd = new CDCD();
+            this->cdcd = new CDCD(true, false);
         } else {
             this->cdcd = NULL;
         }
         if (eaeaUp) {
-            this->eaea = new EAEA();
+            this->eaea = new EAEA(true, false);
         } else {
             this->eaea = NULL;
         }
@@ -44,6 +44,7 @@ class RingComputerReceiver {
 
     void static *runEAEAChannel(void *arg)
     {
+        /*
         EAEA eaea;
         long id = (long)arg;
         // printf("\tReceiver_thread [%ld]\n", id);
@@ -55,6 +56,7 @@ class RingComputerReceiver {
             printf("\tReceiver_thread [%ld]\n", id);
             eaea.receiveEAEA("127.0.0.1");
         }
+        */
         pthread_exit(NULL);
     }
 

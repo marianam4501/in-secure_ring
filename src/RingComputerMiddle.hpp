@@ -18,19 +18,21 @@ class RingComputerMiddle {
   private:
     CDCD* cdcd;
     EAEA* eaea;
+    const char* ip;
 
   public:
-    RingComputerMiddle(const bool cdcdUp, const bool eaeaUp) {
+    RingComputerMiddle(const bool cdcdUp, const bool eaeaUp, const char* ip) {
         if (cdcdUp) {
-            this->cdcd = new CDCD();
+            this->cdcd = new CDCD(true, true);
         } else {
             this->cdcd = NULL;
         }
         if (eaeaUp) {
-            this->eaea = new EAEA();
+            this->eaea = new EAEA(true, true);
         } else {
             this->eaea = NULL;
         }
+        this->ip = ip;
     }
 
     ~RingComputerMiddle() {
@@ -44,6 +46,7 @@ class RingComputerMiddle {
 
     void static *runEAEAChannel(void *arg)
     {
+        /*
         EAEA eaea;
         long id = (long)arg;
         //printf("\tMiddle_thread [%ld]\n", id);
@@ -55,6 +58,7 @@ class RingComputerMiddle {
             printf("\tMiddle_thread [%ld]\n", id);
             eaea.receiveSendEAEA("127.0.0.1", 8081);
         }
+        */
         pthread_exit(NULL);
     }
 

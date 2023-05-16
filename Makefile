@@ -21,6 +21,24 @@ main:
 run: 
 		./build/main
 
+s1: 
+		./build/main s CDCD 127.0.0.1
+
+s2: 
+		./build/main s EAEA 127.0.0.1
+
+m1: 
+		./build/main m CDCD 127.0.0.1
+
+m2: 
+		./build/main m EAEA 127.0.0.1
+
+r1: 
+		./build/main r CDCD 127.0.0.1
+
+r2: 
+		./build/main r EAEA 127.0.0.1
+
 args:
 		./build/main 127.0.0.1
 

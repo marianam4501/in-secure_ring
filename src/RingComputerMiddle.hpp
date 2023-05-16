@@ -11,23 +11,35 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "RingComputer.hpp"
+#include "EAEA.hpp"
+#include "CDCD.hpp"
 
-class RingComputerMiddle : public RingComputer {
-  public:
-    struct thread_info_t {
-        long id;
-        RingComputerMiddle* myComputer;
-    };
-
+class RingComputerMiddle {
   private:
-    /* Add here message generator */
+    CDCD* cdcd;
+    EAEA* eaea;
 
   public:
-    RingComputerMiddle() {
+    RingComputerMiddle(const bool cdcdUp, const bool eaeaUp) {
+        if (cdcdUp) {
+            this->cdcd = new CDCD();
+        } else {
+            this->cdcd = NULL;
+        }
+        if (eaeaUp) {
+            this->eaea = new EAEA();
+        } else {
+            this->eaea = NULL;
+        }
     }
 
     ~RingComputerMiddle() {
+        if (this->cdcd != NULL) {
+            free(this->cdcd);
+        }
+        if (this->eaea != NULL) {
+            free(this->eaea);
+        }
     }
 
     void static *runEAEAChannel(void *arg)

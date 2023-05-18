@@ -68,7 +68,7 @@ class CDCD {
                 } else {
                     std::cout << "Connection failed" << std::endl;
                 }
-                // sleep(4);
+                sleep(4);
                 ++sended;
                 if(sended == 10) {
                     stop = true;
@@ -99,6 +99,7 @@ class CDCD {
                 }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
+                std::cerr << "resendCDCD error" << std::endl;
             }
         }
         std::cout << "Resend End\n";
@@ -122,9 +123,10 @@ class CDCD {
                 }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
+                std::cerr << "receiveCDCD error" << std::endl;
             }
         }
-        std::cout << "Resend End\n";
+        std::cout << "Receive End\n";
     }
 };
 

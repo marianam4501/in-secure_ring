@@ -1,5 +1,5 @@
 #include <iostream>
-#include "cryptographer.hpp"
+#include "Cryptographer.hpp"
 #include "FileManager.hpp"
 
 int main() {

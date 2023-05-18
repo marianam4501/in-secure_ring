@@ -12,14 +12,26 @@ class EAEA {
     Client *client;
 
   public:
-    EAEA() {
-      this->server = new Server();
-      this->client = new Client();
+    EAEA(const bool serverUp, const bool clientUp) {
+        if(serverUp) {
+            this->server = new Server();
+        } else {
+            this->server = NULL;
+        }
+        if(clientUp) {
+            this->client = new Client();
+        } else {
+            this->client = NULL;
+        }
     }
 
     ~EAEA() {
-      free(this->server);
-      free(this->client);
+        if (this->server != NULL) {
+            free(this->server);
+        }
+        if (this->client != NULL) {
+            free(this->client);
+        }
     }
 
     void changeServerPort(const long newPort){

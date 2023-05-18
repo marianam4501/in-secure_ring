@@ -15,37 +15,21 @@
 #include "RingComputerMiddle.hpp"
 #include "RingComputerReceiver.hpp"
 
-void *ringComputerThread(void *arg)
-{
-    long id = (long)arg;
-    printf("This is ringComputerThread [%ld]\n", (long)arg);
-    if(id == 1) {
-        RingComputerSender sender;
-        sleep(2);
-        sender.runChannels();
+int main(int argc, char *argv[]) {
+    std::cout << "Input: [" << argv[1] << "] " << "[" << argv[2] << "] " << "[" << argv[3] << "]\n\n"; 
+    bool cdcdUp = false;
+    bool eaeaUp = false;
+    if (strcmp(argv[2], "CDCD") == 0) { cdcdUp = true; }
+    if (strcmp(argv[2], "EAEA") == 0) { eaeaUp = true; }
+    if (strcmp(argv[1], "s") == 0) {
+        std::cout << "Sender\n";
+        RingComputerSender computer(cdcdUp, eaeaUp, argv[3]);
+    } else if (strcmp(argv[1], "m") == 0) {
+        std::cout << "Middle\n";
+        RingComputerMiddle computer(cdcdUp, eaeaUp, argv[3]);
+    } else if (strcmp(argv[1], "r") == 0) {
+        RingComputerReceiver computer(cdcdUp, eaeaUp);
+        std::cout << "Receiver\n";
     }
-    if(id == 2) {
-        RingComputerMiddle middle;
-        sleep(1);
-        middle.runChannels();
-    }
-    if(id == 3) {
-        RingComputerReceiver receiver;
-        receiver.runChannels();
-    }
-    pthread_exit(NULL);
-}
-
-int main() {
-    pthread_t my_thread[3];
-    long id;
-    for(id = 1; id <= 3; id++) {
-        int ret =  pthread_create(&my_thread[id], NULL, &ringComputerThread, (void*)id);
-        if(ret != 0) {
-            printf("Error: pthread_create() failed\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-    pthread_exit(NULL);
     return 0;
 }

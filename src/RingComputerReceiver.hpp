@@ -11,28 +11,40 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "RingComputer.hpp"
+#include "EAEA.hpp"
+#include "CDCD.hpp"
 
-class RingComputerReceiver : public RingComputer {
-  public:
-    struct thread_info_t {
-        long id;
-        RingComputerReceiver* myComputer;
-    };
-
+class RingComputerReceiver {
   private:
-    /* Add here message generator */
+    CDCD* cdcd;
+    EAEA* eaea;
 
   public:
-    RingComputerReceiver() {
-        this->eaea->changeServerPort(8081);
+    RingComputerReceiver(const bool cdcdUp, const bool eaeaUp) {
+        if (cdcdUp) {
+            this->cdcd = new CDCD(true, false);
+        } else {
+            this->cdcd = NULL;
+        }
+        if (eaeaUp) {
+            this->eaea = new EAEA(true, false);
+        } else {
+            this->eaea = NULL;
+        }
     }
 
     ~RingComputerReceiver() {
+        if (this->cdcd != NULL) {
+            free(this->cdcd);
+        }
+        if (this->eaea != NULL) {
+            free(this->eaea);
+        }
     }
 
     void static *runEAEAChannel(void *arg)
     {
+        /*
         EAEA eaea;
         long id = (long)arg;
         // printf("\tReceiver_thread [%ld]\n", id);
@@ -44,6 +56,7 @@ class RingComputerReceiver : public RingComputer {
             printf("\tReceiver_thread [%ld]\n", id);
             eaea.receiveEAEA("127.0.0.1");
         }
+        */
         pthread_exit(NULL);
     }
 

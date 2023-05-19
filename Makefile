@@ -20,6 +20,12 @@ test:
 runtest:
 		./build/cryptographer_test
 
+logger:
+		$(CC) $(CFLAGS) src/log_manager_test.cpp -o build/logger_test
+
+runlogger:
+		./build/logger_test
+
 s1: 
 		./build/mainCDCD s 127.0.0.1
 

@@ -12,9 +12,10 @@ class CDCD {
     Server *server;
     Client *client;
     char* type;
+    char* ipDirection;
 
   public:
-    CDCD(char* type, const char* ipDirection) {
+    CDCD(char* type, char* ipDirection) {
         // Sender
         if (strcmp(type, "s") == 0) {
             this->client = new Client(ipDirection);
@@ -29,6 +30,7 @@ class CDCD {
             this->server = new Server();
         }
         this->type = type;
+        this->ipDirection = ipDirection;
     }
 
     ~CDCD() {
@@ -59,16 +61,18 @@ class CDCD {
         while (!stop) {
             try {
                 // TODO: get message from Filemanager (also validate this message)
-                char* message = "CDCD message 1 from sender";
+                std::string message = "CDCD message " + std::to_string(sended) + " from sender";
                 // TODO: encrypt message (also validate that encryption was done correctly)
-                if(this->client->connect()) {
-                    this->client->send(message);
-                    std::cout << "Sended: [" << message << "]\n";
-                    // TODO: Log this information
-                } else {
+                if (this->client->connect() != true) {
                     std::cout << "Connection failed" << std::endl;
+                } else {
+                    this->client->send(message.c_str());
+                    std::cout << "Sended: [" << message << "]\n";
                 }
-                sleep(4);
+                // TODO: Log this information
+                free(this->client);
+                this->client = new Client(this->ipDirection);
+                sleep(3);
                 ++sended;
                 if(sended == 10) {
                     stop = true;
@@ -88,12 +92,17 @@ class CDCD {
         while (!stop) {
             try {
                 char* message = this->server->start();
-                this->client->connect();
-                this->client->send(message);
-                std::cout << "Resended: [" << message << "]\n";
+                if (this->client->connect() != true) {
+                    std::cout << "Connection failed" << std::endl;
+                } else {
+                    this->client->send(message);
+                    std::cout << "Resend: [" << message << "]\n";
+                }
                 // TODO: Log this information
-                sleep(4);
+                //sleep(4);
                 ++sended;
+                free(this->client);
+                this->client = new Client(this->ipDirection);
                 if(sended == 10) {
                     stop = true;
                 }
@@ -116,7 +125,7 @@ class CDCD {
                 // TODO: Log this information
                 // TODO: Store this information
                 std::cout << "Received: [" << message << "]\n";
-                sleep(4);
+                //sleep(4);
                 ++received;
                 if(received == 10) {
                     stop = true;

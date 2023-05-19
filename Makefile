@@ -3,6 +3,7 @@ CC = g++
 CFLAGS = -g -std=c++11
 mainCDCD = -o build/mainCDCD src/CDCD/main.cpp -pthread
 mainEAEA = -o build/mainEAEA src/EAEA/main.cpp -pthread
+test = -o build/cryptographer_test src/cryptographer_test.cpp -lcrypto -lssl
 
 cdcd:
 		mkdir -p build && \
@@ -11,6 +12,13 @@ cdcd:
 eaea:
 		mkdir -p build && \
 		$(CC) $(CFLAGS) $(mainEAEA)
+
+test:
+		mkdir -p build && \
+		$(CC) $(CFLAGS) $(test)
+
+runtest:
+		./build/cryptographer_test
 
 s1: 
 		./build/mainCDCD s 127.0.0.1

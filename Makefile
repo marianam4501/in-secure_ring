@@ -46,3 +46,18 @@ r2:
 
 clean:
 		$(RM) build/* && rmdir build && clear
+
+1: 
+		./build/mainCDCD s 172.24.131.80
+
+2: 
+		./build/mainCDCD m 172.24.131.81
+
+3: 
+		./build/mainCDCD m 172.24.131.82
+
+4: 
+		./build/mainCDCD m 172.24.131.70
+
+5: 
+		./build/mainCDCD r Argumento_innecesario

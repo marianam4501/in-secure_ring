@@ -81,6 +81,7 @@ Reemplaza <clave_privada_entidad>.pem con la ruta y el nombre del archivo que co
 Al utilizar la opción -passin pass:<contraseña>, se le indicará a OpenSSL que utilice la contraseña especificada para descifrar la clave privada protegida y generar la solicitud de certificado.  
   
 Cuando ejecutes el comando, se te pedirá que ingreses la contraseña de tu clave privada. Una vez que la contraseña sea proporcionada correctamente, OpenSSL generará la solicitud de certificado en el archivo <solicitud_csr>.csr.  
+  
 2. Firmar el certificado:  
 Utiliza el comando openssl ca para firmar el certificado utilizando tu AC.  
 Asegúrate de tener la solicitud de certificado (<solicitud_csr>.csr) y la configuración de la AC (ca.cnf) en el mismo directorio. Ejecuta el siguiente comando:  
@@ -91,6 +92,7 @@ Reemplaza <solicitud_csr>.csr con el nombre del archivo de solicitud de certific
   
 Durante el proceso, se te pedirá que ingreses la contraseña de tu clave privada de la AC y confirmes la firma del certificado.  
 OpenSSL utilizará la configuración de tu AC (ca.cnf) para generar y firmar el certificado.  
+  
 3. Certificado firmado:  
 Una vez que hayas ejecutado el comando, se generará el certificado firmado <certificado>.crt utilizando la clave privada de tu AC.  
 Este certificado puede ser entregado a la entidad o usuario correspondiente.  

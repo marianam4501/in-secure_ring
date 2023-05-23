@@ -11,8 +11,9 @@ openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:204
 openssl rsa -pubout -in private_key.pem -out public_key.pem  
 
 ### Para crear autoridad certificadora:
-1. Crear la estructura de directorios: 
+1. Crear la estructura de directorios:  
 Crea una estructura de directorios para almacenar los certificados y llaves relacionados con la Autoridad Certificadora. Por ejemplo:  
+  
 mkdir ~/ca  
 cd ~/ca  
 mkdir private certs newcerts crl  

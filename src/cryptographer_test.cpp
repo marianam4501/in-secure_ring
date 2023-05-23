@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Cryptographer.hpp"
-#include "/home/mariana.murilloquintana/in-secure_ring/src/CDCD/FileManager.hpp"
+#include "FileManager.hpp"
 
 int main() {
     Cryptographer cryptographer;
@@ -9,10 +9,10 @@ int main() {
     std::string message = "Qué felicidad.";
 
     // Encriptar mensaje
-    std::string encrypted_message = cryptographer.encrypt(message,"public_key.pem"); 
+    std::string encrypted_message = cryptographer.encrypt(message,"./src/public_key.pem"); 
 
     // Desencriptar mensaje
-    std::string decrypted_message = cryptographer.decrypt(encrypted_message,"private_key.pem");
+    std::string decrypted_message = cryptographer.decrypt(encrypted_message,"./src/private_key.pem");
 
     // Mostrar resultados
     std::cout << "Mensaje original: " << message << std::endl;

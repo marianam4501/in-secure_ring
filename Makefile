@@ -1,8 +1,8 @@
 CC = g++
 #FLAGS = -Wall -Wextra -g -std=c++11 # No warnings por ahora
 CFLAGS = -g -std=c++11
-mainCDCD = -o build/mainCDCD src/CDCD/main.cpp -pthread
-mainEAEA = -o build/mainEAEA src/EAEA/main.cpp -pthread
+mainCDCD = -o build/mainCDCD src/CDCD/main.cpp -lcrypto -lssl # -pthread
+mainEAEA = -o build/mainEAEA src/EAEA/main.cpp -lcrypto -lssl # -pthread
 test = -o build/cryptographer_test src/cryptographer_test.cpp -lcrypto -lssl
 
 cdcd:
@@ -46,3 +46,18 @@ r2:
 
 clean:
 		$(RM) build/* && rmdir build && clear
+
+1: 
+		./build/mainCDCD s 172.24.131.80
+
+2: 
+		./build/mainCDCD m 172.24.131.81
+
+3: 
+		./build/mainCDCD m 172.24.131.82
+
+4: 
+		./build/mainCDCD m 172.24.131.70
+
+5: 
+		./build/mainCDCD r Argumento_innecesario

@@ -6,11 +6,13 @@
 
 #include "Server.hpp"
 #include "Client.hpp"
+#include "Cryptographer.hpp"
 
 class CDCD {
   private:
     Server *server;
     Client *client;
+    Cryptographer *crytographer;
     char* type;
     char* ipDirection;
 
@@ -20,14 +22,17 @@ class CDCD {
         if (strcmp(type, "s") == 0) {
             this->client = new Client(ipDirection);
             this->server = NULL;
+            this->crytographer = new Cryptographer();
         }
         if (strcmp(type, "m") == 0) {
             this->client = new Client(ipDirection);
             this->server = new Server();
+            this->crytographer = NULL;
         }
         if (strcmp(type, "r") == 0) {
             this->client = NULL;
             this->server = new Server();
+            this->crytographer = new Cryptographer();
         }
         this->type = type;
         this->ipDirection = ipDirection;
@@ -40,21 +45,25 @@ class CDCD {
         if (this->client != NULL) {
             free(this->client);
         }
+        if (this->crytographer != NULL) {
+            free(this->crytographer);
+        }
     }
 
     void run() {
         if (strcmp(this->type, "s") == 0) {
-            this->sendCDCD();
+            this->send();
         }
         if (strcmp(this->type, "m") == 0) {
-            this->resendCDCD();
+            this->resend();
         }
         if (strcmp(this->type, "r") == 0) {
-            this->receiveCDCD();
+            this->receive();
         }
     }
 
-    void sendCDCD() {
+  private:
+    void send() {
         std::cout << "Send start\n";
         bool stop = false;
         unsigned int sended= 0;
@@ -72,7 +81,7 @@ class CDCD {
                 // TODO: Log this information
                 free(this->client);
                 this->client = new Client(this->ipDirection);
-                sleep(3);
+                //sleep(3);
                 ++sended;
                 if(sended == 10) {
                     stop = true;
@@ -85,7 +94,7 @@ class CDCD {
         std::cout << "Send End\n";
     }
 
-    void resendCDCD() {
+    void resend() {
         std::cout << "Resend start\n";
         bool stop = false;
         unsigned int sended= 0;
@@ -114,7 +123,7 @@ class CDCD {
         std::cout << "Resend End\n";
     }
 
-    void receiveCDCD() {
+    void receive() {
         std::cout << "Receive start\n";
         bool stop = false;
         unsigned int received= 0;

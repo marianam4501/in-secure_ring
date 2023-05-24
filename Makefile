@@ -48,16 +48,16 @@ clean:
 		$(RM) build/* && rmdir build && clear
 
 1: 
-		./build/mainCDCD s 172.24.131.80
+		./build/mainCDCD s Argumento_innecesario 192.168.5.42
 
 2: 
-		./build/mainCDCD m 172.24.131.81
+		./build/mainCDCD m 192.168.5.42 192.168.5.43
 
 3: 
-		./build/mainCDCD m 172.24.131.82
+		./build/mainCDCD m 192.168.5.43 192.168.5.44
 
 4: 
-		./build/mainCDCD m 172.24.131.70
+		./build/mainCDCD m 192.168.5.44 192.168.5.45
 
 5: 
-		./build/mainCDCD r Argumento_innecesario
+		./build/mainCDCD r 192.168.5.45 Argumento_innecesario

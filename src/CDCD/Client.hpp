@@ -17,17 +17,17 @@ class Client {
   private:
     int sock_;
     struct sockaddr_in server_;
-    const char* server_address;
+    std::string clientIP;
 
   public:
-    Client(const char* server_address) {
+    Client(std::string clientIP) {
         if ((sock_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             throw std::runtime_error("socket failed");
         }
         memset(&server_, '0', sizeof(server_));
         server_.sin_family = AF_INET;
         server_.sin_port = htons(PORT);
-        this->server_address = server_address;
+        this->clientIP = clientIP;
     }
 
     ~Client() {
@@ -38,7 +38,7 @@ class Client {
         if(port != 0) {
             server_.sin_port = htons(port);
         }
-        if (inet_pton(AF_INET, this->server_address, &server_.sin_addr) <= 0) {
+        if (inet_pton(AF_INET, this->clientIP.c_str(), &server_.sin_addr) <= 0) {
             // throw std::runtime_error("Invalid address/ Address not supported");
             return false;
         }

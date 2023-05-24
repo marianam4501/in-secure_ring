@@ -13,29 +13,29 @@ class CDCD {
     Server *server;
     Client *client;
     Cryptographer *crytographer;
-    char* type;
-    char* ipDirection;
+    std::string type;
+    std::string clientIP;
 
   public:
-    CDCD(char* type, char* ipDirection) {
+    CDCD(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
-        if (strcmp(type, "s") == 0) {
-            this->client = new Client(ipDirection);
+        if (type.compare("s") == 0) {
+            this->client = new Client(clientIP);
             this->server = NULL;
             this->crytographer = new Cryptographer();
         }
-        if (strcmp(type, "m") == 0) {
-            this->client = new Client(ipDirection);
-            this->server = new Server();
+        if (type.compare("m") == 0) {
+            this->client = new Client(clientIP);
+            this->server = new Server(serverIP);
             this->crytographer = NULL;
         }
-        if (strcmp(type, "r") == 0) {
+        if (type.compare("r") == 0) {
             this->client = NULL;
-            this->server = new Server();
+            this->server = new Server(serverIP);
             this->crytographer = new Cryptographer();
         }
         this->type = type;
-        this->ipDirection = ipDirection;
+        this->clientIP = clientIP;
     }
 
     ~CDCD() {
@@ -51,13 +51,13 @@ class CDCD {
     }
 
     void run() {
-        if (strcmp(this->type, "s") == 0) {
+        if (type.compare("s") == 0) {
             this->send();
         }
-        if (strcmp(this->type, "m") == 0) {
+        if (type.compare("m") == 0) {
             this->resend();
         }
-        if (strcmp(this->type, "r") == 0) {
+        if (type.compare("r") == 0) {
             this->receive();
         }
     }
@@ -80,7 +80,7 @@ class CDCD {
                 }
                 // TODO: Log this information
                 free(this->client);
-                this->client = new Client(this->ipDirection);
+                this->client = new Client(this->clientIP);
                 //sleep(3);
                 ++sended;
                 if(sended == 10) {
@@ -111,7 +111,7 @@ class CDCD {
                 //sleep(4);
                 ++sended;
                 free(this->client);
-                this->client = new Client(this->ipDirection);
+                this->client = new Client(this->clientIP);
                 if(sended == 10) {
                     stop = true;
                 }

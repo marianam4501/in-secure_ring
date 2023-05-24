@@ -14,8 +14,11 @@
 #include "CDCD.hpp"
 
 int main(int argc, char *argv[]) {
-    std::cout << "Input: [" << argv[1] << "] " << "[" << argv[2] << "]\n\n"; 
-    CDCD channel(argv[1], argv[2]);
+    std::string type = argv[1];
+    std::string serverIP = argv[2];
+    std::string clientIP = argv[3];
+    std::cout << "Input: [" << type << "] " << "[" << serverIP << "]" << "[" << clientIP << "]\n\n";
+    CDCD channel(type, serverIP, clientIP);
     channel.run();
     return 0;
 }

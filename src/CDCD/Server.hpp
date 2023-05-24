@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <string>
+#include <arpa/inet.h>
 
 #define PORT 8080
 
@@ -18,8 +19,11 @@ class Server {
     int server_fd_;
     int new_socket_;
     struct sockaddr_in address_;
+    std::string serverIP;
+
   public:
-    Server(const long port = 0) {
+    Server(std::string serverIP, const long port = 0) {
+        this->serverIP = serverIP;
         // Creating socket file descriptor
         if ((server_fd_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             throw std::runtime_error("socket failed");
@@ -32,7 +36,7 @@ class Server {
         }
 
         address_.sin_family = AF_INET;
-        address_.sin_addr.s_addr = INADDR_ANY;
+        address_.sin_addr.s_addr = inet_addr(this->serverIP.c_str());
         if(port == 0) {
             address_.sin_port = htons(PORT);
         } else {

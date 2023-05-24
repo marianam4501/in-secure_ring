@@ -12,7 +12,7 @@ class CDCD {
   private:
     Server *server;
     Client *client;
-    Cryptographer *crytographer;
+    Cryptographer *cryptographer;
     std::string type;
     std::string clientIP;
 
@@ -22,17 +22,17 @@ class CDCD {
         if (type.compare("s") == 0) {
             this->client = new Client(clientIP);
             this->server = NULL;
-            this->crytographer = new Cryptographer();
+            this->cryptographer = new Cryptographer();
         }
         if (type.compare("m") == 0) {
             this->client = new Client(clientIP);
             this->server = new Server(serverIP);
-            this->crytographer = NULL;
+            this->cryptographer = NULL;
         }
         if (type.compare("r") == 0) {
             this->client = NULL;
             this->server = new Server(serverIP);
-            this->crytographer = new Cryptographer();
+            this->cryptographer = new Cryptographer();
         }
         this->type = type;
         this->clientIP = clientIP;
@@ -45,8 +45,8 @@ class CDCD {
         if (this->client != NULL) {
             free(this->client);
         }
-        if (this->crytographer != NULL) {
-            free(this->crytographer);
+        if (this->cryptographer != NULL) {
+            free(this->cryptographer);
         }
     }
 
@@ -71,7 +71,7 @@ class CDCD {
             try {
                 // TODO: get message from Filemanager (also validate this message)
                 std::string message = "CDCD message " + std::to_string(sended) + " from sender";
-                // TODO: encrypt message (also validate that encryption was done correctly)
+                message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
                 if (this->client->connect() != true) {
                     std::cout << "Connection failed" << std::endl;
                 } else {
@@ -129,8 +129,8 @@ class CDCD {
         unsigned int received= 0;
         while (!stop) {
             try {
-                char* message = this->server->start();
-                // TODO: Decrypt this information
+                std::string message(this->server->start());
+                message = this->cryptographer->decrypt(message,"./src/private_key.pem");
                 // TODO: Log this information
                 // TODO: Store this information
                 std::cout << "Received: [" << message << "]\n";

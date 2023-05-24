@@ -5,7 +5,7 @@ class LogManager {
 public:
     LogManager(const std::string& ident) {
         // Abre una conexión con syslog
-        openlog(ident.c_str(), LOG_PID | LOG_CONS, LOG_USER);
+        openlog(ident.c_str(), LOG_PID | LOG_CONS, LOG_LOCAL4);
     }
 
     ~LogManager() {

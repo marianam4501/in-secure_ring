@@ -6,7 +6,7 @@
 
 class MessageGenerator {
  public:
-  static int createMessage(const std::string message) {
+  int createMessage(const std::string message) {
     std::string common_path = "/home/mariana.murilloquintana/CDCD/";
     std::string next_filename = common_path + "next.txt";
     std::string filename = FileManager::Read(next_filename);
@@ -19,7 +19,7 @@ class MessageGenerator {
         FileManager::Write(message, common_path + filename + ".txt");
         file_count++;
         std::cout << "File count: " << file_count << std::endl;
-        filename = MessageGenerator::convertToZeroPaddedString(file_count);
+        filename = this->convertToZeroPaddedString(file_count);
         std::cout << "Next filename: " << filename << std::endl;
         FileManager::Write(filename, next_filename);
         return 0;
@@ -30,7 +30,7 @@ class MessageGenerator {
   }
 
   private:
-    static std::string convertToZeroPaddedString(int number)
+    std::string convertToZeroPaddedString(int number)
     {
         std::string numberString = std::to_string(number);
         std::string zeroPaddedString = numberString;

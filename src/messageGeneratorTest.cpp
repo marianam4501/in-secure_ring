@@ -6,6 +6,7 @@ int main(){
     std::cout << "Enter your message: ";
     std::getline(std::cin, message);
     std::cout << std::endl;
-    MessageGenerator::createMessage(message);
+    MessageGenerator generator;
+    generator.createMessage(message);
     return 0;
 }

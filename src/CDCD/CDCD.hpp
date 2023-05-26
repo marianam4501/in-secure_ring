@@ -19,6 +19,7 @@ class CDCD {
     Cryptographer *cryptographer;
     std::string type;
     std::string clientIP;
+    MessageGenerator generator;
 
   public:
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
@@ -145,7 +146,7 @@ class CDCD {
                 std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
                 // TODO: Log this information
                 // TODO: Store this information
-                MessageGenerator::createMessage(decrypted_message);
+                generator.createMessage(decrypted_message);
                 std::cout << "Received: [" << decrypted_message << "]\n";
                 ++received;
                 if(received == 100) {

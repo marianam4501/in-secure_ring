@@ -74,7 +74,7 @@ Asegúrate de guardar el archivo con el nombre ca.cnf en el directorio raíz de 
 La entidad o el usuario que desea obtener un certificado de tu AC debe generar una solicitud de certificado (CSR, por sus siglas en inglés) que incluya su información y su clave pública. 
 Pueden hacerlo utilizando OpenSSL con el siguiente comando:  
   
-openssl req -new -key <clave_privada_entidad>.pem -passin pass:<contraseña> -out <solicitud_csr>.csr  
+openssl req -new -key private/<clave_privada_entidad>.pem -passin pass:<contraseña> -out newcerts/<solicitud_csr>.csr    
   
 Reemplaza <clave_privada_entidad>.pem con la ruta y el nombre del archivo que contiene tu clave privada protegida con contraseña, <contraseña> con la contraseña de tu clave privada, y <solicitud_csr>.csr con el nombre deseado para el archivo de solicitud de certificado.  
   
@@ -86,7 +86,7 @@ Cuando ejecutes el comando, se te pedirá que ingreses la contraseña de tu clav
 Utiliza el comando openssl ca para firmar el certificado utilizando tu AC.  
 Asegúrate de tener la solicitud de certificado (<solicitud_csr>.csr) y la configuración de la AC (ca.cnf) en el mismo directorio. Ejecuta el siguiente comando:  
   
-openssl ca -config ca.cnf -in <solicitud_csr>.csr -out <certificado>.crt  
+openssl ca -config ca.cnf -in newcerts/<solicitud_csr>.csr -out certs/<certificado>.crt    
   
 Reemplaza <solicitud_csr>.csr con el nombre del archivo de solicitud de certificado y <certificado>.crt con el nombre que deseas para el archivo de certificado firmado.  
   
@@ -96,3 +96,7 @@ OpenSSL utilizará la configuración de tu AC (ca.cnf) para generar y firmar el 
 3. Certificado firmado:  
 Una vez que hayas ejecutado el comando, se generará el certificado firmado <certificado>.crt utilizando la clave privada de tu AC.  
 Este certificado puede ser entregado a la entidad o usuario correspondiente.  
+
+openssl req -new -key mariana_key.pem -out fabian.csr
+openssl req -new -key private_key.pem -out newcerts/mariana.csr
+openssl ca -config ca.cnf -in ../fabian.csr -out certs/fabian.crt

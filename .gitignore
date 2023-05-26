@@ -32,6 +32,7 @@
 *.app
 
 *build/*
+*src/EAEA/ca/*
 
 *src/private_key.pem
 *src/public_key.pem

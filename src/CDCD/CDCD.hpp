@@ -1,6 +1,7 @@
 #ifndef CDCD_HPP
 #define CDCD_HPP
 
+#include <syslog.h>
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -18,19 +19,18 @@ class CDCD {
     Client *client;
     Cryptographer *cryptographer;
     std::string type;
-    std::string clientIP;
     MessageGenerator generator;
 
   public:
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
         if (type.compare("s") == 0) {
-            this->client = new Client();
+            this->client = new Client(clientIP);
             this->server = NULL;
             this->cryptographer = new Cryptographer();
         }
         if (type.compare("m") == 0) {
-            this->client = new Client();
+            this->client = new Client(clientIP);
             this->server = new Server(serverIP);
             this->cryptographer = NULL;
         }
@@ -40,7 +40,6 @@ class CDCD {
             this->cryptographer = new Cryptographer();
         }
         this->type = type;
-        this->clientIP = clientIP;
     }
 
     ~CDCD() {
@@ -72,8 +71,8 @@ class CDCD {
         std::cout << "Send start\n";
         bool stop = false;
         unsigned int sended= 0;
-        std::string message_count_path = "/home/mariana.murilloquintana/CDCD/000000.txt";
-        std::string path = "/home/mariana.murilloquintana/CDCD/";
+        std::string message_count_path = "/home/fabian.gonzalez/CDCD/CDCDmsgs/000000.txt";
+        std::string path = "/home/fabian.gonzalez/CDCD/CDCDmsgs/";
         while (!stop) {
             try {
                 // TODO: get message from Filemanager (also validate this message)
@@ -82,8 +81,10 @@ class CDCD {
                 message = FileManager::Read(path+last_msg_processed+".txt");
                 if(!message.empty()){
                     std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
+                    this->writeLog("CDCD: Sending message");
                     message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
-                    this->client->send(message,clientIP);
+                    this->client->send(message);
+                    this->writeLog("CDCD: Message sended");
                     std::cout << "Sended: [" << message << "]\n";
                     std::cout << "Length: [" << message.length() << "]\n";
                     int file_count = std::stoi(last_msg_processed);
@@ -115,9 +116,9 @@ class CDCD {
             try {
                 std::vector<unsigned char> message = this->server->start();
                 std::string received_message(message.begin(), message.end());
-                this->client->send(received_message,this->clientIP);
+                this->client->send(received_message);
                 std::cout << "Resend: [" << received_message << "]\n";
-                // TODO: Log this information
+                this->writeLog("CDCD: Message received and resended to next computer");
                 ++sended;
                 if(sended == 2) {
                     stop = true;
@@ -140,8 +141,9 @@ class CDCD {
                 std::string received_message(message.begin(), message.end());
                 std::cout << "Length received: [" << received_message.length() << "]\n";
                 std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
-                // TODO: Log this information
+                this->writeLog("CDCD: Message received");
                 // TODO: Store this information
+                this->writeLog("CDCD: Message stored");
                 generator.createMessage(decrypted_message);
                 std::cout << "Received: [" << decrypted_message << "]\n";
                 ++received;
@@ -156,20 +158,26 @@ class CDCD {
         std::cout << "Receive End\n";
     }
 
-    private:
-        std::string convertToZeroPaddedString(int number)
+  private:
+    std::string convertToZeroPaddedString(int number)
+    {
+        std::string numberString = std::to_string(number);
+        std::string zeroPaddedString = numberString;
+
+        // Agregar ceros a la izquierda si es necesario
+        while (zeroPaddedString.length() < 6)
         {
-            std::string numberString = std::to_string(number);
-            std::string zeroPaddedString = numberString;
-
-            // Agregar ceros a la izquierda si es necesario
-            while (zeroPaddedString.length() < 6)
-            {
-                zeroPaddedString = "0" + zeroPaddedString;
-            }
-
-            return zeroPaddedString;
+            zeroPaddedString = "0" + zeroPaddedString;
         }
+
+        return zeroPaddedString;
+    }
+
+    void writeLog(const std::string message) {
+        openlog(NULL, LOG_PID | LOG_CONS, LOG_LOCAL4);
+        syslog(LOG_NOTICE, "%s", message.c_str());
+        closelog();
+    }
 };
 
 #endif

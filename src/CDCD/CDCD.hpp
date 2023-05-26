@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <string>
-
+#include <algorithm>
+#include <cstring>
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Cryptographer.hpp"
@@ -21,12 +22,12 @@ class CDCD {
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
         if (type.compare("s") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client();
             this->server = NULL;
             this->cryptographer = new Cryptographer();
         }
         if (type.compare("m") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client();
             this->server = new Server(serverIP);
             this->cryptographer = NULL;
         }
@@ -71,21 +72,16 @@ class CDCD {
         while (!stop) {
             try {
                 // TODO: get message from Filemanager (also validate this message)
-                std::string message = "CDCD message " + std::to_string(sended) + " from sender";
+                std::string message = "Intento No." + std::to_string(sended);
                 message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
-                if (this->client->connect() != true) {
-                    std::cout << "Connection failed" << std::endl;
-                } else {
-                    this->client->send(message.c_str());
-                    std::cout << "Sended: [" << message << "]\n";
-                    std::cout << "Length: [" << message.length() << "]\n";
-                }
+                
+                this->client->send(message,clientIP);
+                std::cout << "Sended: [" << message << "]\n";
+                std::cout << "Length: [" << message.length() << "]\n";
                 // TODO: Log this information
-                free(this->client);
-                this->client = new Client(this->clientIP);
-                //sleep(3);
+                
                 ++sended;
-                if(sended == 10) {
+                if(sended == 2) {
                     stop = true;
                 }
             } catch (const std::exception& e) {
@@ -103,21 +99,12 @@ class CDCD {
         while (!stop) {
             try {
                 std::vector<unsigned char> message = this->server->start();
-                if (this->client->connect() != true) {
-                    std::cout << "Connection failed" << std::endl;
-                } else {
-                    char* buffer = new char[message.size() + 1];
-                    std::memcpy(buffer, message.data(), message.size());
-                    buffer[message.size()] = '\0';
-                    this->client->send(buffer);
-                    std::cout << "Resend: [" << buffer << "]\n";
-                }
+                std::string received_message(message.begin(), message.end());
+                this->client->send(received_message,this->clientIP);
+                std::cout << "Resend: [" << received_message << "]\n";
                 // TODO: Log this information
-                //sleep(4);
                 ++sended;
-                free(this->client);
-                this->client = new Client(this->clientIP);
-                if(sended == 10) {
+                if(sended == 2) {
                     stop = true;
                 }
             } catch (const std::exception& e) {
@@ -134,20 +121,17 @@ class CDCD {
         unsigned int received= 0;
         while (!stop) {
             try {
-                std::vector<unsigned char> received_message = this->server->start();
-                char* buffer = new char[received_message.size() + 1];
-                std::memcpy(buffer, received_message.data(), received_message.size());
-                buffer[received_message.size()] = '\0';
-                std::cout << "Received: [" << buffer << "]\n";
-                std::cout << "Length: [" << strlen(buffer) << "]\n";
-                std::string message = this->cryptographer->decrypt(buffer,"./src/private_key.pem");
+                std::vector<unsigned char> message = this->server->start();
+                std::string received_message(message.begin(), message.end());
+                std::cout << "Length received: [" << received_message.length() << "]\n";
+                std::string decrypted_message = this->cryptographer->decrypt(received_message.c_str(),"./src/private_key.pem");
                 // TODO: Log this information
                 // TODO: Store this information
-                std::cout << "Received: [" << message << "]\n";
-                std::cout << "Length: [" << message.length() << "]\n";
+                std::cout << "Received: [" << decrypted_message << "]\n";
+                //std::cout << "Length: [" << message.length() << "]\n";
                 //sleep(4);
                 ++received;
-                if(received == 10) {
+                if(received == 100) {
                     stop = true;
                 }
             } catch (const std::exception& e) {

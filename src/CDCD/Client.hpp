@@ -1,73 +1,76 @@
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
-
-#include <netinet/in.h> // Para la comunicación en red
-#include <cstdio> // Para entrada y salida estándar
-#include <cstdlib> // Para funciones generales como malloc(), exit(), etc.
-#include <cstring> // Para funciones de manipulación de cadenas
-#include <sys/socket.h> // Para la creación y manipulación de sockets
-#include <unistd.h> // Para funciones de sistema como sleep(), close(), etc.
-#include <arpa/inet.h> // Para la manipulación de direcciones IP
-#include <stdexcept> // Para excepciones estándar de C++
+#include <arpa/inet.h>
 #include <iostream>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #define PORT 8080
 
-class Client {
-  private:
-    int sock_;
-    struct sockaddr_in server_;
-    std::string clientIP;
+using namespace std;
 
-  public:
-    Client(std::string clientIP) {
-        if ((sock_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-            throw std::runtime_error("socket failed");
-        }
-        memset(&server_, '0', sizeof(server_));
-        server_.sin_family = AF_INET;
-        server_.sin_port = htons(PORT);
-        this->clientIP = clientIP;
+class Client
+{
+public:
+  static int send(const std::string& message, const std::string& clientIP)
+  {
+    int client_fd;
+    struct sockaddr_in serv_addr;
+    const char* messageP = message.c_str();
+    char buffer[1024] = {0};
+
+    if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+      std::cout << "\n Socket creation error \n";
+      return -1;
     }
 
-    ~Client() {
-        close(sock_);
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+
+    // Convert IPv4 and IPv6 addresses from text to binary form
+    if (inet_pton(AF_INET, clientIP.c_str(), &serv_addr.sin_addr) <= 0)
+    {
+      std::cout << "\nInvalid address/ Address not supported \n";
+      return -1;
     }
 
-    bool connect(const long port = 0) {
-        if(port != 0) {
-            server_.sin_port = htons(port);
-        }
-        if (inet_pton(AF_INET, this->clientIP.c_str(), &server_.sin_addr) <= 0) {
-            // throw std::runtime_error("Invalid address/ Address not supported");
-            return false;
-        }
-        if (::connect(sock_, (struct sockaddr*)&server_, sizeof(server_)) < 0) {
-            // throw std::runtime_error("Connection Failed");
-            return false;
-        }
-        return true;
+    if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+      std::cout << "\nConnection Failed \n";
+      return -1;
     }
 
-    void send(const char* message) {
-        size_t messageLength = strlen(message);
+    size_t totalSent = 0;
+    size_t messageSize = message.length();
 
-        // Envía el mensaje a través del socket
-        ssize_t bytesSent = ::send(sock_, message, messageLength, 0);
-        if (bytesSent < 0) {
-            throw std::runtime_error("Send failed");
-        } else if (static_cast<size_t>(bytesSent) != messageLength) {
-            throw std::runtime_error("Incomplete send");
-        }
-
-        // Lee la respuesta del servidor
-        char buffer[1024] = { 0 };
-        ssize_t bytesRead = read(sock_, buffer, sizeof(buffer));
-        if (bytesRead < 0) {
-            throw std::runtime_error("Read failed");
-        }
-        // printf("%s\n", buffer);
+    while (totalSent < messageSize)
+    {
+      ssize_t sent = ::send(client_fd, messageP + totalSent, messageSize - totalSent, 0);
+      if (sent == -1)
+      {
+        std::cout << "\nError sending message\n";
+        return -1;
+      }
+      totalSent += sent;
     }
 
+    if (totalSent != messageSize)
+    {
+      std::cout << "\nError sending complete message\n";
+      return -1;
+    }
+
+    ssize_t valread = read(client_fd, buffer, 1024);
+    if (valread > 0)
+    {
+      std::cout << "Message sent from client\n";
+    }
+
+    std::cout << buffer << std::endl;
+
+    // closing the connected socket
+    close(client_fd);
+
+    return 0;
+  }
 };
-#endif

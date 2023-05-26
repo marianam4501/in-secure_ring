@@ -7,6 +7,7 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Cryptographer.hpp"
+#include <vector>
 
 class CDCD {
   private:
@@ -100,12 +101,15 @@ class CDCD {
         unsigned int sended= 0;
         while (!stop) {
             try {
-                char* message = this->server->start();
+                std::vector<unsigned char> message = this->server->start();
                 if (this->client->connect() != true) {
                     std::cout << "Connection failed" << std::endl;
                 } else {
-                    this->client->send(message);
-                    std::cout << "Resend: [" << message << "]\n";
+                    char* buffer = new char[message.size() + 1];
+                    std::memcpy(buffer, message.data(), message.size());
+                    buffer[message.size()] = '\0';
+                    this->client->send(buffer);
+                    std::cout << "Resend: [" << buffer << "]\n";
                 }
                 // TODO: Log this information
                 //sleep(4);
@@ -129,8 +133,11 @@ class CDCD {
         unsigned int received= 0;
         while (!stop) {
             try {
-                std::string message(this->server->start());
-                message = this->cryptographer->decrypt(message,"./src/private_key.pem");
+                std::vector<unsigned char> received_message = this->server->start();
+                char* buffer = new char[received_message.size() + 1];
+                std::memcpy(buffer, received_message.data(), received_message.size());
+                buffer[received_message.size()] = '\0';
+                std::string message = this->cryptographer->decrypt(received_message,"./src/private_key.pem");
                 // TODO: Log this information
                 // TODO: Store this information
                 std::cout << "Received: [" << message << "]\n";

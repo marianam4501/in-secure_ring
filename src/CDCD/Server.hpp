@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <arpa/inet.h>
+#include <vector>
 
 #define PORT 8080
 
@@ -54,7 +55,7 @@ class Server {
         close(server_fd_);
     }
 
-    char* start() {
+    std::vector start() {
         if (listen(server_fd_, 3) < 0) {
             throw std::runtime_error("listen");
         }
@@ -65,7 +66,8 @@ class Server {
         char* buffer = new char[1024];
         const char* hello = "\t(Respuesta del servidor)";
         int valread = read(new_socket_, buffer, 1024);
-        printf("%s\n", buffer);
+        const std::vector<unsigned char> received_message(buffer, buffer + valread);
+        std::cout << received_message << std::endl;
         send(new_socket_, hello, strlen(hello), 0);
         return buffer;
     }

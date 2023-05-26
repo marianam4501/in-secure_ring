@@ -8,7 +8,7 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Cryptographer.hpp"
-#include "FileManager.hpp"
+#include "../FileManager.hpp"
 #include "../MessageGenerator.hpp"
 #include <vector>
 
@@ -74,29 +74,25 @@ class CDCD {
         unsigned int sended= 0;
         std::string message_count_path = "/home/mariana.murilloquintana/CDCD/000000.txt";
         std::string path = "/home/mariana.murilloquintana/CDCD/";
-        std::string last_msg_processed = FileManager::Read(message_count_path);
         while (!stop) {
             try {
                 // TODO: get message from Filemanager (also validate this message)
+                std::string last_msg_processed = FileManager::Read(message_count_path);
                 std::string message = "";
-                if(last_msg_processed != "000000"){
-                    message = FileManager::Read(path+last_msg_processed+".txt");
-                    if(!message.empty()){
-                        std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
-                        message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
-                        this->client->send(message,clientIP);
-                        std::cout << "Sended: [" << message << "]\n";
-                        std::cout << "Length: [" << message.length() << "]\n";
-                        int file_count = std::stoi(last_msg_processed);
-                        file_count++;
-                        last_msg_processed = convertToZeroPaddedString(file_count);
-                        FileManager::Write(last_msg_processed, message_count_path);
-                        ++sended;
-                    } else {
-                        //std::cout << "File doesnt exist. " << std::endl;
-                    }
+                message = FileManager::Read(path+last_msg_processed+".txt");
+                if(!message.empty()){
+                    std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
+                    message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
+                    this->client->send(message,clientIP);
+                    std::cout << "Sended: [" << message << "]\n";
+                    std::cout << "Length: [" << message.length() << "]\n";
+                    int file_count = std::stoi(last_msg_processed);
+                    file_count++;
+                    last_msg_processed = convertToZeroPaddedString(file_count);
+                    FileManager::Write(last_msg_processed, message_count_path);
+                    ++sended;
                 } else {
-                    std::cout << "There is nothing to process yet." << std::endl;
+                    //std::cout << "File doesnt exist. " << std::endl;
                 }
                 // TODO: Log this information
                 

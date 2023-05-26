@@ -10,7 +10,7 @@ class FileManager {
   static std::string Read(const std::string& filename) {
     std::ifstream file(filename);
     if (!file) {
-      std::cerr << "Error: Could not open file '" << filename << "' for reading." << std::endl;
+      //std::cerr << "Error: Could not open file '" << filename << "' for reading." << std::endl;
       return "";
     }
     std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
@@ -21,7 +21,7 @@ class FileManager {
   static bool Write(const std::string& content, const std::string& filename) {
     std::ofstream file(filename, std::ofstream::trunc);
     if (!file) {
-      std::cerr << "Error: Could not open file '" << filename << "' for writing." << std::endl;
+      //std::cerr << "Error: Could not open file '" << filename << "' for writing." << std::endl;
       return false;
     }
     file << content;

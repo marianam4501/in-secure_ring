@@ -71,14 +71,16 @@ class CDCD {
         std::cout << "Send start\n";
         bool stop = false;
         unsigned int sended= 0;
-        std::string message_count_path = "/home/fabian.gonzalez/CDCD/CDCDmsgs/000000.txt";
-        std::string path = "/home/fabian.gonzalez/CDCD/CDCDmsgs/";
+        std::string message_count_path = "/home/fabian.gonzalezrojas/CDCD/000000.txt";
+        std::string path = "/home/fabian.gonzalezrojas/CDCD/";
         while (!stop) {
             try {
-                // TODO: get message from Filemanager (also validate this message)
                 std::string last_msg_processed = FileManager::Read(message_count_path);
+                std::cout << "last_msg_processed: {" << last_msg_processed << "}\n";
+                std::cout << "Message read\n";
                 std::string message = "";
                 message = FileManager::Read(path+last_msg_processed+".txt");
+                std::cout << "Message: {" << message << "}\n";
                 if(!message.empty()){
                     std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
                     this->writeLog("CDCD: Sending message");
@@ -92,11 +94,11 @@ class CDCD {
                     last_msg_processed = convertToZeroPaddedString(file_count);
                     FileManager::Write(last_msg_processed, message_count_path);
                     ++sended;
+                    sleep(1);
                 } else {
-                    //std::cout << "File doesnt exist. " << std::endl;
+                    std::cout << "\tEmpty message" << std::endl;
+                    stop = true;
                 }
-                // TODO: Log this information
-                
                 if(sended == 20) {
                     stop = true;
                 }
@@ -142,7 +144,6 @@ class CDCD {
                 std::cout << "Length received: [" << received_message.length() << "]\n";
                 std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
                 this->writeLog("CDCD: Message received");
-                // TODO: Store this information
                 this->writeLog("CDCD: Message stored");
                 generator.createMessage(decrypted_message);
                 std::cout << "Received: [" << decrypted_message << "]\n";
@@ -174,7 +175,7 @@ class CDCD {
     }
 
     void writeLog(const std::string message) {
-        openlog(NULL, LOG_PID | LOG_CONS, LOG_LOCAL4);
+        openlog("Program [CDCD] ", LOG_PID, LOG_LOCAL4);
         syslog(LOG_NOTICE, "%s", message.c_str());
         closelog();
     }

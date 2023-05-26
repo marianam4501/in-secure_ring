@@ -7,7 +7,7 @@
 class MessageGenerator {
  public:
   int createMessage(const std::string message) {
-    std::string common_path = "/home/mariana.murilloquintana/CDCD/";
+    std::string common_path = "/home/fabian.gonzalezrojas/CDCD/";
     std::string next_filename = common_path + "next.txt";
     std::string filename = FileManager::Read(next_filename);
     int file_count = std::stoi(filename);

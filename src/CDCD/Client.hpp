@@ -51,24 +51,22 @@ class Client {
 
     void send(const char* message) {
         size_t messageLength = strlen(message);
-        size_t totalSent = 0;
 
-        while (totalSent < messageLength) {
-            ssize_t bytesSent = ::send(sock_, message + totalSent, messageLength - totalSent, 0);
-            if (bytesSent < 0) {
-                throw std::runtime_error("Send failed");
-            }
-            totalSent += bytesSent;
+        // Envía el mensaje a través del socket
+        ssize_t bytesSent = ::send(sock_, message, messageLength, 0);
+        if (bytesSent < 0) {
+            throw std::runtime_error("Send failed");
+        } else if (static_cast<size_t>(bytesSent) != messageLength) {
+            throw std::runtime_error("Incomplete send");
         }
 
-        // Verificar si todos los bytes se han enviado
-        if (totalSent != messageLength) {
-            throw std::runtime_error("Not all bytes were sent");
-        }
-
+        // Lee la respuesta del servidor
         char buffer[1024] = { 0 };
-        int valread = read(sock_, buffer, 1024);
-        // printf("%s\n", buffer);
+        ssize_t bytesRead = read(sock_, buffer, sizeof(buffer));
+        if (bytesRead < 0) {
+            throw std::runtime_error("Read failed");
+        }
+        // printf("%s\n", buffer);
     }
 
 };

@@ -138,6 +138,8 @@ class CDCD {
                 char* buffer = new char[received_message.size() + 1];
                 std::memcpy(buffer, received_message.data(), received_message.size());
                 buffer[received_message.size()] = '\0';
+                std::cout << "Received: [" << buffer << "]\n";
+                std::cout << "Length: [" << strlen(buffer) << "]\n";
                 std::string message = this->cryptographer->decrypt(buffer,"./src/private_key.pem");
                 // TODO: Log this information
                 // TODO: Store this information

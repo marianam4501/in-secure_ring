@@ -98,10 +98,10 @@ class Server {
         const char* hello = "\t(Respuesta del servidor)";
         int valread = read(new_socket_, buffer, 1024);
         const std::vector<unsigned char> received_message(buffer, buffer + valread);
-        for (const auto& element : received_message) {
-            std::cout << element << " ";
-        }
-        std::cout << std::endl;
+        //for (const auto& element : received_message) {
+        //    std::cout << element << " ";
+        //}
+        //std::cout << std::endl;
         send(new_socket_, hello, strlen(hello), 0);
         return received_message;
     }

@@ -26,6 +26,13 @@ logger:
 runlogger:
 		./build/logger_test
 
+messageGenerator:
+		mkdir -p build && \
+		$(CC) $(CFLAGS) src/messageGeneratorTest.cpp -o build/message_generator
+
+generator:
+		./build/message_generator
+
 s1: 
 		./build/mainCDCD s 127.0.0.1
 

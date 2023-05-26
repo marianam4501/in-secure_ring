@@ -72,7 +72,7 @@ class CDCD {
         while (!stop) {
             try {
                 // TODO: get message from Filemanager (also validate this message)
-                std::string message = "Intento No." + std::to_string(sended);
+                std::string message = "JUEPUTA " + std::to_string(sended);
                 message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
                 
                 this->client->send(message,clientIP);
@@ -124,12 +124,10 @@ class CDCD {
                 std::vector<unsigned char> message = this->server->start();
                 std::string received_message(message.begin(), message.end());
                 std::cout << "Length received: [" << received_message.length() << "]\n";
-                std::string decrypted_message = this->cryptographer->decrypt(received_message.c_str(),"./src/private_key.pem");
+                std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
                 // TODO: Log this information
                 // TODO: Store this information
                 std::cout << "Received: [" << decrypted_message << "]\n";
-                //std::cout << "Length: [" << message.length() << "]\n";
-                //sleep(4);
                 ++received;
                 if(received == 100) {
                     stop = true;

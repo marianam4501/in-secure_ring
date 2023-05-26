@@ -73,7 +73,9 @@ class Server {
             }
             totalReceived += bytesReceived;
         }
-
+        if (totalReceived != sizeof(buffer)) {
+            throw std::runtime_error("Not all bytes were received");
+        }
         const std::vector<unsigned char> received_message(buffer, buffer + totalReceived);
         for (const auto& element : received_message) {
             std::cout << element << " ";

@@ -61,9 +61,15 @@ class Client {
             totalSent += bytesSent;
         }
 
-        char buffer[1024] = {0};
+        // Verificar si todos los bytes se han enviado
+        if (totalSent != messageLength) {
+            throw std::runtime_error("Not all bytes were sent");
+        }
+
+        char buffer[1024] = { 0 };
         int valread = read(sock_, buffer, 1024);
         // printf("%s\n", buffer);
     }
+
 };
 #endif

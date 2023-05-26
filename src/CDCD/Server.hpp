@@ -55,7 +55,7 @@ class Server {
         close(server_fd_);
     }
 
-    std::vector<unsigned char> start() {
+    /*std::vector<unsigned char> start() {
         if (listen(server_fd_, 3) < 0) {
             throw std::runtime_error("listen");
         }
@@ -75,10 +75,29 @@ class Server {
         }
         if (totalReceived != sizeof(buffer)) {
             throw std::runtime_error("Not all bytes were received");
-        }*/
+        }
         int valread = read(new_socket_, buffer, 1024);
         const std::vector<unsigned char> received_message(buffer, buffer + valread);
         //const std::vector<unsigned char> received_message(buffer, buffer + totalReceived);
+        for (const auto& element : received_message) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
+        send(new_socket_, hello, strlen(hello), 0);
+        return received_message;
+    }*/
+    std::vector<unsigned char> start() {
+        if (listen(server_fd_, 3) < 0) {
+            throw std::runtime_error("listen");
+        }
+        int addrlen = sizeof(address_);
+        if ((new_socket_ = accept(server_fd_, (struct sockaddr*)&address_, (socklen_t*)&addrlen)) < 0) {
+            throw std::runtime_error("accept");
+        }
+        char* buffer = new char[1024];
+        const char* hello = "\t(Respuesta del servidor)";
+        int valread = read(new_socket_, buffer, 1024);
+        const std::vector<unsigned char> received_message(buffer, buffer + valread);
         for (const auto& element : received_message) {
             std::cout << element << " ";
         }

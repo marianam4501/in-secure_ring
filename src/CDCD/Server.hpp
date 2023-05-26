@@ -65,7 +65,7 @@ class Server {
         }
         char* buffer = new char[1024];
         const char* hello = "\t(Respuesta del servidor)";
-        size_t totalReceived = 0;
+        /*size_t totalReceived = 0;
         while (totalReceived < sizeof(buffer)) {
             ssize_t bytesReceived = read(new_socket_, buffer + totalReceived, sizeof(buffer) - totalReceived);
             if (bytesReceived < 0) {
@@ -75,8 +75,10 @@ class Server {
         }
         if (totalReceived != sizeof(buffer)) {
             throw std::runtime_error("Not all bytes were received");
-        }
-        const std::vector<unsigned char> received_message(buffer, buffer + totalReceived);
+        }*/
+        int valread = read(new_socket_, buffer, 1024);
+        const std::vector<unsigned char> received_message(buffer, buffer + valread);
+        //const std::vector<unsigned char> received_message(buffer, buffer + totalReceived);
         for (const auto& element : received_message) {
             std::cout << element << " ";
         }

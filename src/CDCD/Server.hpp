@@ -55,7 +55,7 @@ class Server {
         close(server_fd_);
     }
 
-    std::vector start() {
+    std::vector<unsigned char> start() {
         if (listen(server_fd_, 3) < 0) {
             throw std::runtime_error("listen");
         }
@@ -67,9 +67,12 @@ class Server {
         const char* hello = "\t(Respuesta del servidor)";
         int valread = read(new_socket_, buffer, 1024);
         const std::vector<unsigned char> received_message(buffer, buffer + valread);
-        std::cout << received_message << std::endl;
+        for (const auto& element : received_message) {
+            std::cout << element << " ";
+        }
+        std::cout << std::endl;
         send(new_socket_, hello, strlen(hello), 0);
-        return buffer;
+        return received_message;
     }
 };
 

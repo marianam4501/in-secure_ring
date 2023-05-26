@@ -78,6 +78,7 @@ class CDCD {
                 } else {
                     this->client->send(message.c_str());
                     std::cout << "Sended: [" << message << "]\n";
+                    std::cout << "Length: [" << message.length() << "]\n";
                 }
                 // TODO: Log this information
                 free(this->client);
@@ -89,7 +90,7 @@ class CDCD {
                 }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
-                std::cerr << "sendCDCD error" << std::endl;
+                std::cerr << "\t\tsendCDCD error" << std::endl;
             }
         }
         std::cout << "Send End\n";
@@ -121,7 +122,7 @@ class CDCD {
                 }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
-                std::cerr << "resendCDCD error" << std::endl;
+                std::cerr << "\t\tresendCDCD error" << std::endl;
             }
         }
         std::cout << "Resend End\n";
@@ -141,6 +142,7 @@ class CDCD {
                 // TODO: Log this information
                 // TODO: Store this information
                 std::cout << "Received: [" << message << "]\n";
+                std::cout << "Length: [" << message.length() << "]\n";
                 //sleep(4);
                 ++received;
                 if(received == 10) {
@@ -148,7 +150,7 @@ class CDCD {
                 }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
-                std::cerr << "receiveCDCD error" << std::endl;
+                std::cerr << "\t\treceiveCDCD error" << std::endl;
             }
         }
         std::cout << "Receive End\n";

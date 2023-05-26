@@ -94,7 +94,7 @@ public:
                              reinterpret_cast<const unsigned char*>(message.c_str()), message.length()) <= 0) {
             EVP_PKEY_free(privateKey);
             EVP_PKEY_CTX_free(ctx);
-            throw std::runtime_error("Decryption failed");
+            throw std::runtime_error("\tDecryption failed");
         }
 
         EVP_PKEY_free(privateKey);

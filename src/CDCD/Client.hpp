@@ -50,13 +50,20 @@ class Client {
     }
 
     void send(const char* message) {
-        if (::send(sock_, message, strlen(message), 0) < 0) {
-            throw std::runtime_error("Send failed");
+        size_t messageLength = strlen(message);
+        size_t totalSent = 0;
+
+        while (totalSent < messageLength) {
+            ssize_t bytesSent = ::send(sock_, message + totalSent, messageLength - totalSent, 0);
+            if (bytesSent < 0) {
+                throw std::runtime_error("Send failed");
+            }
+            totalSent += bytesSent;
         }
-        char buffer[1024] = { 0 };
+
+        char buffer[1024] = {0};
         int valread = read(sock_, buffer, 1024);
         // printf("%s\n", buffer);
     }
 };
-
 #endif

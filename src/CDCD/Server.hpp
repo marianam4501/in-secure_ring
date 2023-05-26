@@ -65,8 +65,16 @@ class Server {
         }
         char* buffer = new char[1024];
         const char* hello = "\t(Respuesta del servidor)";
-        int valread = read(new_socket_, buffer, 1024);
-        const std::vector<unsigned char> received_message(buffer, buffer + valread);
+        size_t totalReceived = 0;
+        while (totalReceived < sizeof(buffer)) {
+            ssize_t bytesReceived = read(new_socket_, buffer + totalReceived, sizeof(buffer) - totalReceived);
+            if (bytesReceived < 0) {
+                throw std::runtime_error("Read failed");
+            }
+            totalReceived += bytesReceived;
+        }
+
+        const std::vector<unsigned char> received_message(buffer, buffer + totalReceived);
         for (const auto& element : received_message) {
             std::cout << element << " ";
         }

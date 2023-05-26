@@ -9,7 +9,7 @@
 #include "Client.hpp"
 #include "Cryptographer.hpp"
 #include "FileManager.hpp"
-#include "MessageGenerator.hpp"
+#include "../MessageGenerator.hpp"
 #include <vector>
 
 class CDCD {

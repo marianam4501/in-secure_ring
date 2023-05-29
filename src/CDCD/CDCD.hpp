@@ -71,34 +71,29 @@ class CDCD {
         std::cout << "Send start\n";
         bool stop = false;
         unsigned int sended= 0;
-        std::string message_count_path = "/home/fabian.gonzalezrojas/CDCD/000000.txt";
-        std::string path = "/home/fabian.gonzalezrojas/CDCD/";
+        std::string message_count_path = "/home/mariana.murilloquintana/CDCD/000000.txt";
+        std::string path = "/home/mariana.murilloquintana/CDCD/";
         while (!stop) {
             try {
                 std::string last_msg_processed = FileManager::Read(message_count_path);
-                std::cout << "last_msg_processed: {" << last_msg_processed << "}\n";
-                std::cout << "Message read\n";
                 std::string message = "";
                 message = FileManager::Read(path+last_msg_processed+".txt");
-                std::cout << "Message: {" << message << "}\n";
                 if(!message.empty()){
                     std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
-                    this->writeLog("CDCD: Sending message");
+                    this->writeLog("Sending message");
                     message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
-                    this->client->send(message);
-                    this->writeLog("CDCD: Message sended");
-                    std::cout << "Sended: [" << message << "]\n";
-                    std::cout << "Length: [" << message.length() << "]\n";
-                    int file_count = std::stoi(last_msg_processed);
-                    file_count++;
-                    last_msg_processed = convertToZeroPaddedString(file_count);
-                    FileManager::Write(last_msg_processed, message_count_path);
-                    ++sended;
-                    sleep(1);
-                } else {
-                    std::cout << "\tEmpty message" << std::endl;
-                    stop = true;
-                }
+                    if(this->client->send(message) == 0){
+                        this->writeLog("Message sended");
+                        std::cout << "Sended: [" << message << "]\n";
+                        std::cout << "Length: [" << message.length() << "]\n";
+                        int file_count = std::stoi(last_msg_processed);
+                        file_count++;
+                        last_msg_processed = convertToZeroPaddedString(file_count);
+                        FileManager::Write(last_msg_processed, message_count_path);
+                        ++sended;
+                        sleep(1);
+                    }
+                } 
                 if(sended == 20) {
                     stop = true;
                 }
@@ -120,7 +115,7 @@ class CDCD {
                 std::string received_message(message.begin(), message.end());
                 this->client->send(received_message);
                 std::cout << "Resend: [" << received_message << "]\n";
-                this->writeLog("CDCD: Message received and resended to next computer");
+                this->writeLog("Message received and resended to next computer");
                 ++sended;
                 if(sended == 2) {
                     stop = true;
@@ -143,8 +138,8 @@ class CDCD {
                 std::string received_message(message.begin(), message.end());
                 std::cout << "Length received: [" << received_message.length() << "]\n";
                 std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
-                this->writeLog("CDCD: Message received");
-                this->writeLog("CDCD: Message stored");
+                this->writeLog("Message received");
+                this->writeLog("Message stored");
                 generator.createMessage(decrypted_message);
                 std::cout << "Received: [" << decrypted_message << "]\n";
                 ++received;

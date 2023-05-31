@@ -54,25 +54,30 @@ class CDCD {
         }
     }
 
-    void run() {
+    bool run() {
+        bool isRunning = true;
         if (type.compare("s") == 0) {
-            this->send();
+            isRunning = this->send();
         }
         if (type.compare("m") == 0) {
-            this->resend();
+            isRunning = this->resend();
         }
         if (type.compare("r") == 0) {
-            this->receive();
+            isRunning = this->receive();
         }
+        return isRunning;
+    }
+
+    void errorLog() {
+        this->writeLog("Runtime error: relaunching");
     }
 
   private:
-    void send() {
+    bool send() {
         std::cout << "Send start\n";
-        bool stop = false;
-        unsigned int sended= 0;
-        std::string message_count_path = "/home/mariana.murilloquintana/CDCD/000000.txt";
-        std::string path = "/home/mariana.murilloquintana/CDCD/";
+        std::string message_count_path = "/home/fabian.gonzalezrojas/CDCD/000000.txt";
+        std::string path = "/home/fabian.gonzalezrojas/CDCD/";
+        const bool stop = false;
         while (!stop) {
             try {
                 std::string last_msg_processed = FileManager::Read(message_count_path);
@@ -90,25 +95,22 @@ class CDCD {
                         file_count++;
                         last_msg_processed = convertToZeroPaddedString(file_count);
                         FileManager::Write(last_msg_processed, message_count_path);
-                        ++sended;
                         sleep(1);
                     }
                 } 
-                if(sended == 20) {
-                    stop = true;
-                }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tsendCDCD error" << std::endl;
+                return false;
             }
         }
         std::cout << "Send End\n";
+        return false;
     }
 
-    void resend() {
+    bool resend() {
         std::cout << "Resend start\n";
-        bool stop = false;
-        unsigned int sended= 0;
+        const bool stop = false;
         while (!stop) {
             try {
                 std::vector<unsigned char> message = this->server->start();
@@ -116,22 +118,19 @@ class CDCD {
                 this->client->send(received_message);
                 std::cout << "Resend: [" << received_message << "]\n";
                 this->writeLog("Message received and resended to next computer");
-                ++sended;
-                if(sended == 2) {
-                    stop = true;
-                }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tresendCDCD error" << std::endl;
+                return false;
             }
         }
         std::cout << "Resend End\n";
+        return false;
     }
 
-    void receive() {
+    bool receive() {
         std::cout << "Receive start\n";
-        bool stop = false;
-        unsigned int received= 0;
+        const bool stop = false;
         while (!stop) {
             try {
                 std::vector<unsigned char> message = this->server->start();
@@ -142,19 +141,16 @@ class CDCD {
                 this->writeLog("Message stored");
                 generator.createMessage(decrypted_message);
                 std::cout << "Received: [" << decrypted_message << "]\n";
-                ++received;
-                if(received == 100) {
-                    stop = true;
-                }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\treceiveCDCD error" << std::endl;
+                return false;
             }
         }
         std::cout << "Receive End\n";
+        return false;
     }
 
-  private:
     std::string convertToZeroPaddedString(int number)
     {
         std::string numberString = std::to_string(number);

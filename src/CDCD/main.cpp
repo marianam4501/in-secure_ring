@@ -19,6 +19,11 @@ int main(int argc, char *argv[]) {
     std::string clientIP = argv[3];
     std::cout << "Input: [" << type << "] " << "[" << serverIP << "]" << "[" << clientIP << "]\n\n";
     CDCD channel(type, serverIP, clientIP);
-    channel.run();
+    const bool stop = false;
+    while (!stop)
+        if (!channel.run()) {
+            std::cout << "Runtime error: relaunching\n" ;
+            channel.errorLog(); // Might be wise checking the integrity of the program in this routine
+        }
     return 0;
 }

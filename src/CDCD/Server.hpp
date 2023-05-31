@@ -13,7 +13,7 @@
 #include <arpa/inet.h>
 #include <vector>
 
-#define PORT 8080
+#define PORT 52685
 
 class Server {
   private:

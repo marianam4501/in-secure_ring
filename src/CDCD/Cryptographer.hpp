@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 class Cryptographer {
 public:
@@ -61,14 +62,56 @@ public:
         return encrypted;
     }
 
-    std::string decrypt(const std::string& message, const std::string& privateKeyFilePath, const std::string& passphrase = "") {
+    // std::string decrypt(const std::string& message, const std::string& privateKeyFilePath, const std::string& passphrase = "") {
+    //     FILE* privateKeyFile = fopen(privateKeyFilePath.c_str(), "rb");
+    //     if (!privateKeyFile) {
+    //         throw std::runtime_error("Failed to open private key file");
+    //     }
+
+    //     EVP_PKEY* privateKey = PEM_read_PrivateKey(privateKeyFile, nullptr, nullptr,
+    //                                                const_cast<char*>(passphrase.c_str()));
+    //     fclose(privateKeyFile);
+
+    //     if (!privateKey) {
+    //         throw std::runtime_error("Failed to read private key");
+    //     }
+
+    //     EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(privateKey, nullptr);
+    //     if (!ctx) {
+    //         EVP_PKEY_free(privateKey);
+    //         throw std::runtime_error("Failed to create EVP_PKEY_CTX");
+    //     }
+
+    //     if (EVP_PKEY_decrypt_init(ctx) <= 0) {
+    //         EVP_PKEY_free(privateKey);
+    //         EVP_PKEY_CTX_free(ctx);
+    //         throw std::runtime_error("Failed to initialize decryption");
+    //     }
+
+    //     size_t decryptedLength = message.length();
+    //     std::string decrypted(decryptedLength, '\0');
+
+    //     if (EVP_PKEY_decrypt(ctx, reinterpret_cast<unsigned char*>(&decrypted[0]), &decryptedLength,
+    //                          reinterpret_cast<const unsigned char*>(message.c_str()), message.length()) <= 0) {
+    //         EVP_PKEY_free(privateKey);
+    //         EVP_PKEY_CTX_free(ctx);
+    //         throw std::runtime_error("\tDecryption failed");
+    //     }
+
+    //     EVP_PKEY_free(privateKey);
+    //     EVP_PKEY_CTX_free(ctx);
+
+    //     decrypted.resize(decryptedLength);
+    //     return decrypted;
+    // }
+    std::string decrypt(const std::vector<unsigned char>& message, const std::string& privateKeyFilePath, const std::string& passphrase = "") {
         FILE* privateKeyFile = fopen(privateKeyFilePath.c_str(), "rb");
         if (!privateKeyFile) {
             throw std::runtime_error("Failed to open private key file");
         }
 
         EVP_PKEY* privateKey = PEM_read_PrivateKey(privateKeyFile, nullptr, nullptr,
-                                                   const_cast<char*>(passphrase.c_str()));
+                                                const_cast<char*>(passphrase.c_str()));
         fclose(privateKeyFile);
 
         if (!privateKey) {
@@ -87,11 +130,11 @@ public:
             throw std::runtime_error("Failed to initialize decryption");
         }
 
-        size_t decryptedLength = message.length();
+        size_t decryptedLength = message.size();
         std::string decrypted(decryptedLength, '\0');
 
         if (EVP_PKEY_decrypt(ctx, reinterpret_cast<unsigned char*>(&decrypted[0]), &decryptedLength,
-                             reinterpret_cast<const unsigned char*>(message.c_str()), message.length()) <= 0) {
+                            message.data(), message.size()) <= 0) {
             EVP_PKEY_free(privateKey);
             EVP_PKEY_CTX_free(ctx);
             throw std::runtime_error("\tDecryption failed");

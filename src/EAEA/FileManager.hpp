@@ -40,8 +40,10 @@ class FileManager {
 					std::string nextFilePath = file.directoryPath + "/" + nextFile + ".txt"; 
 					std::cout << "Next file: "<< nextFilePath << std::endl; 
 					std::string messageContent = this->Read(nextFilePath);
-					std::cout << "Next file content: "<< messageContent << std::endl; 
-					messages.push_back(messageContent);
+					if(messageContent != ""){
+						std::cout << "Next file content: "<< messageContent << std::endl; 
+						messages.push_back(messageContent);
+					}
 					std::cout << std::endl;
 				}
 			}

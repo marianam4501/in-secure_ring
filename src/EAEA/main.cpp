@@ -14,8 +14,16 @@
 #include "EAEA.hpp"
 
 int main(int argc, char *argv[]) {
-    std::cout << "Input: [" << argv[1] << "] " << "[" << argv[2] << "]\n\n"; 
-    EAEA channel(argv[1], argv[2]);
-    channel.run();
+    std::string type = argv[1];
+    std::string serverIP = argv[2];
+    std::string clientIP = argv[3];
+    std::cout << "Input: [" << type << "] " << "[" << serverIP << "]" << "[" << clientIP << "]\n\n";
+    EAEA channel(type, serverIP, clientIP);
+    const bool stop = false;
+    while (!stop)
+        if (!channel.run()) {
+            std::cout << "Runtime error: relaunching\n" ;
+            channel.errorLog(); // Might be wise checking the integrity of the program in this routine
+        }
     return 0;
 }

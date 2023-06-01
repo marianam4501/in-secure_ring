@@ -9,8 +9,8 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Cryptographer.hpp"
-#include "../FileManager.hpp"
-#include "../MessageGenerator.hpp"
+#include "FileManager.hpp"
+#include "MessageGenerator.hpp"
 #include <vector>
 
 class CDCD {
@@ -138,8 +138,8 @@ class CDCD {
                 std::cout << "Length received: [" << received_message.length() << "]\n";
                 std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
                 this->writeLog("Message received");
-                this->writeLog("Message stored");
                 generator.createMessage(decrypted_message);
+                this->writeLog("Message stored");
                 std::cout << "Received: [" << decrypted_message << "]\n";
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
@@ -166,7 +166,7 @@ class CDCD {
     }
 
     void writeLog(const std::string message) {
-        openlog("Program [CDCD] ", LOG_PID, LOG_LOCAL4);
+        openlog("Program G4 [CDCD] ", LOG_PID, LOG_LOCAL4);
         syslog(LOG_NOTICE, "%s", message.c_str());
         closelog();
     }

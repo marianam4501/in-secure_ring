@@ -16,20 +16,19 @@
 #define PORT 52685
 
 class Server {
-private:
+  private:
     int server_fd_;
     int new_socket_;
     struct sockaddr_in address_;
     std::string serverIP;
 
-public:
+  public:
     Server(std::string serverIP, const long port = 0) : server_fd_(-1), new_socket_(-1) {
         this->serverIP = serverIP;
         // Creating socket file descriptor
         if ((server_fd_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             throw std::runtime_error("socket failed");
         }
-
         int opt = 1;
         // Forcefully attaching socket to the port 8080
         if (setsockopt(server_fd_, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
@@ -44,13 +43,11 @@ public:
         } else {
             address_.sin_port = htons(port);
         }
-
         // Forcefully attaching socket to the port 8080
         if (bind(server_fd_, (struct sockaddr*)&address_, sizeof(address_)) < 0) {
             close(server_fd_);
             throw std::runtime_error("bind failed");
         }
-
         if (listen(server_fd_, 3) < 0) {
             close(server_fd_);
             throw std::runtime_error("listen");
@@ -67,29 +64,19 @@ public:
         if ((new_socket_ = accept(server_fd_, (struct sockaddr*)&address_, (socklen_t*)&addrlen)) < 0) {
             throw std::runtime_error("accept");
         }
-
         char buffer[1024] = {0};
         const char* hello = "\t(Respuesta del servidor)";
-
         int valread;
         if ((valread = read(new_socket_, buffer, sizeof(buffer) - 1)) < 0) {
             close(new_socket_);
             throw std::runtime_error("read");
         }
-
         const std::vector<unsigned char> received_message(buffer, buffer + valread);
-        //for (const auto& element : received_message) {
-        //    std::cout << element << " ";
-        //}
-        //std::cout << std::endl;
-
         if (send(new_socket_, hello, strlen(hello), 0) < 0) {
             close(new_socket_);
             throw std::runtime_error("send");
         }
-
         close(new_socket_);
-
         return received_message;
     }
 };

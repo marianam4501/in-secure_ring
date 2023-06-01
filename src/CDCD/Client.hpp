@@ -1,3 +1,6 @@
+#ifndef CLIENT_HPP
+#define CLIENT_HPP
+
 #include <arpa/inet.h>
 #include <iostream>
 #include <string.h>
@@ -5,8 +8,6 @@
 #include <unistd.h>
 
 #define PORT 52685
-
-using namespace std;
 
 class Client {
   private:
@@ -61,8 +62,9 @@ class Client {
         std::cout << "Message sent from client\n";
       }
       std::cout << buffer << std::endl;
-      // closing the connected socket
       close(client_fd);
       return 0;
     }
 };
+
+#endif

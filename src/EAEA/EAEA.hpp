@@ -11,7 +11,6 @@
 #include "Client.hpp"
 #include "Cryptographer.hpp"
 #include "FileManager.hpp"
-#include "MessageGenerator.hpp"
 #include <vector>
 
 class EAEA {
@@ -20,7 +19,7 @@ class EAEA {
     Client *client;
     Cryptographer *cryptographer;
     std::string type;
-    MessageGenerator generator;
+    FileManager fileManager;
 
   public:
     EAEA(std::string type, std::string serverIP, std::string clientIP) {
@@ -81,9 +80,9 @@ class EAEA {
         const bool stop = false;
         while (!stop) {
             try {
-                std::string last_msg_processed = FileManager::Read(message_count_path);
+                std::string last_msg_processed = fileManager.Read(message_count_path);
                 std::string message = "";
-                message = FileManager::Read(path+last_msg_processed+".txt");
+                message = fileManager.Read(path+last_msg_processed+".txt");
                 if(!message.empty()){
                     std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
                     this->writeLog("Sending message");
@@ -95,7 +94,7 @@ class EAEA {
                         int file_count = std::stoi(last_msg_processed);
                         file_count++;
                         last_msg_processed = convertToZeroPaddedString(file_count);
-                        FileManager::Write(last_msg_processed, message_count_path);
+                        fileManager.Write(last_msg_processed, message_count_path);
                         sleep(1);
                     }
                 } 
@@ -140,7 +139,7 @@ class EAEA {
                 std::vector<std::string> messageParts = this->split(received_message, '\n');
                 this->writeLog("Message received");
                 if (this->cryptographer->validHash(messageParts[1], messageParts[2])) {
-                    generator.createMessage(messageParts[2]);
+                    // generator.createMessage(messageParts[2]);
                     this->writeLog("Message stored");
                     std::cout << "Received: [" << messageParts[2] << "]\n";
                 } else {

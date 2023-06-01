@@ -33,9 +33,7 @@ public:
         return false;
     }
 
-  private:
     std::string hashMessage(const std::string& message) {
-        /*
         // Declara una variable para almacenar el hash SHA-256
         unsigned char hash[SHA256_DIGEST_LENGTH];
         // Inicializa el contexto SHA-256
@@ -54,7 +52,6 @@ public:
         }
         // Devuelve el hash SHA-256 como una cadena de caracteres
         return sha256Hash;
-        */
         return message;
     }
 

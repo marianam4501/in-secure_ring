@@ -26,19 +26,23 @@ logger:
 runlogger:
 		./build/logger_test
 
-messageGenerator:
+messageGeneratorCDCD:
 		mkdir -p build && \
-		$(CC) $(CFLAGS) src/messageGeneratorTest.cpp -o build/message_generator
+		$(CC) $(CFLAGS) src/messageGeneratorTest.cpp -o build/message_generatorCDCD
 
-generator:
-		./build/message_generator
+generatorCDCD:
+		./build/message_generatorCDCD
 
 testFileManagerEAEA:
 		mkdir -p build && \
 		$(CC) $(CFLAGS) src/EAEA/testFileManager.cpp -o build/test_fileManagerEAEA
 
-fileManagerEAEA:
-		./build/test_fileManagerEAEA
+messageGeneratorEAEA:
+		mkdir -p build && \
+		$(CC) $(CFLAGS) -lcrypto -lssl src/EAEA/MessageGenerator.cpp -o build/message_generatorEAEA
+
+generatorEAEA:
+		./build/message_generatorEAEA
 
 s1: 
 		./build/mainCDCD s 127.0.0.1

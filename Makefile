@@ -1,6 +1,6 @@
 CC = g++
 #FLAGS = -Wall -Wextra -g -std=c++11 # No warnings por ahora
-CFLAGS = -g -std=c++11
+CFLAGS = -g -std=c++17
 mainCDCD = -o build/mainCDCD src/CDCD/main.cpp -lcrypto -lssl # -l syslog # -pthread
 mainEAEA = -o build/mainEAEA src/EAEA/main.cpp -lcrypto -lssl # -l syslog # -pthread
 test = -o build/cryptographer_test src/cryptographer_test.cpp -lcrypto -lssl # -l syslog

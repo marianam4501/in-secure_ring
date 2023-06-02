@@ -25,12 +25,12 @@ class CDCD {
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
         if (type.compare("s") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client(serverIP, clientIP, true);
             this->server = NULL;
             this->cryptographer = new Cryptographer();
         }
         if (type.compare("m") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client(serverIP, clientIP, false);
             this->server = new Server(serverIP);
             this->cryptographer = NULL;
         }

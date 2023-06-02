@@ -13,11 +13,13 @@ class Client {
   private:
     std::string sourceIP;
     std::string destinyIP;
+    bool bind;
 
   public:
-    Client(std::string sourceIP, std::string destinyIP) {
+    Client(std::string sourceIP, std::string destinyIP, const bool bind) {
       this->sourceIP = sourceIP;
       this->destinyIP = destinyIP;
+      this->bind = bind;
     }
   
     int send(const std::string& message)
@@ -35,10 +37,12 @@ class Client {
       memset(&clientAddress, 0, sizeof(clientAddress));
       clientAddress.sin_family = AF_INET;
       clientAddress.sin_port = htons(PORT);
-      if (inet_pton(AF_INET, this->sourceIP.c_str(), &clientAddress.sin_addr) <= 0)
-      {
-        std::cout << "\nInvalid address/ Address not supported \n";
-        return -1;
+      if(this->bind) {
+        if (inet_pton(AF_INET, this->sourceIP.c_str(), &clientAddress.sin_addr) <= 0)
+        {
+          std::cout << "\nInvalid address/ Address not supported \n";
+          return -1;
+        }
       }
       // Seteando la ip a la que le voy a mandar el mensaje
       memset(&serv_addr, 0, sizeof(serv_addr));
@@ -49,16 +53,13 @@ class Client {
         std::cout << "\nInvalid address/ Address not supported \n";
         return -1;
       }
-      // Bind the socket to the client address
-      if (bind(client_fd, (struct sockaddr *)&clientAddress, sizeof(clientAddress)) == -1) {
-          perror("Bind failed");
-          exit(EXIT_FAILURE);
-      }
-      // Connect to server
-      if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-      {
-        std::cout << "\nConnection Failed \n";
-        return -1;
+      if(this->bind) {
+        // Connect to server
+        if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
+        {
+          std::cout << "\nConnection Failed \n";
+          return -1;
+        }
       }
       size_t totalSent = 0;
       size_t messageSize = message.length();

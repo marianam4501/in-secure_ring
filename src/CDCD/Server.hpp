@@ -23,8 +23,17 @@ class Server {
     std::string serverIP;
 
   public:
-    Server(std::string serverIP, const long port = 0) : server_fd_(-1), new_socket_(-1) {
+    Server(std::string serverIP) : server_fd_(-1), new_socket_(-1) {
         this->serverIP = serverIP;
+        this->prepareServer();
+    }
+
+    ~Server() {
+        close(new_socket_);
+        close(server_fd_);
+    }
+
+    void prepareServer() {
         // Creating socket file descriptor
         if ((server_fd_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             throw std::runtime_error("socket failed");
@@ -35,15 +44,9 @@ class Server {
             close(server_fd_);
             throw std::runtime_error("setsockopt");
         }
-
         address_.sin_family = AF_INET;
         address_.sin_addr.s_addr = inet_addr(this->serverIP.c_str());
-        if (port == 0) {
-            address_.sin_port = htons(PORT);
-        } else {
-            address_.sin_port = htons(port);
-        }
-        // Forcefully attaching socket to the port 8080
+        address_.sin_port = htons(PORT);
         if (bind(server_fd_, (struct sockaddr*)&address_, sizeof(address_)) < 0) {
             close(server_fd_);
             throw std::runtime_error("bind failed");
@@ -54,12 +57,7 @@ class Server {
         }
     }
 
-    ~Server() {
-        close(new_socket_);
-        close(server_fd_);
-    }
-
-    std::vector<unsigned char> start() {
+    std::vector<unsigned char> start(const bool closeServer = false) {
         int addrlen = sizeof(address_);
         if ((new_socket_ = accept(server_fd_, (struct sockaddr*)&address_, (socklen_t*)&addrlen)) < 0) {
             throw std::runtime_error("accept");
@@ -77,6 +75,9 @@ class Server {
             throw std::runtime_error("send");
         }
         close(new_socket_);
+        if(closeServer) {
+            close(server_fd_);
+        }
         return received_message;
     }
 };

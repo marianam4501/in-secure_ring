@@ -25,12 +25,12 @@ class CDCD {
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
         if (type.compare("s") == 0) {
-            this->client = new Client(serverIP, clientIP, true);
+            this->client = new Client(serverIP, clientIP);
             this->server = NULL;
             this->cryptographer = new Cryptographer();
         }
         if (type.compare("m") == 0) {
-            this->client = new Client(serverIP, clientIP, false);
+            this->client = new Client(serverIP, clientIP);
             this->server = new Server(serverIP);
             this->cryptographer = NULL;
         }
@@ -113,11 +113,12 @@ class CDCD {
         const bool stop = false;
         while (!stop) {
             try {
-                std::vector<unsigned char> message = this->server->start();
+                std::vector<unsigned char> message = this->server->start(true);
                 std::string received_message(message.begin(), message.end());
                 this->client->send(received_message);
                 std::cout << "Resend: [" << received_message << "]\n";
                 this->writeLog("Message received and resended to next computer");
+                this->server->prepareServer();
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tresendCDCD error" << std::endl;

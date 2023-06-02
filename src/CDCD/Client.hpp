@@ -13,13 +13,11 @@ class Client {
   private:
     std::string sourceIP;
     std::string destinyIP;
-    bool doBind;
 
   public:
-    Client(std::string sourceIP, std::string destinyIP, const bool doBind) {
+    Client(std::string sourceIP, std::string destinyIP) {
       this->sourceIP = sourceIP;
       this->destinyIP = destinyIP;
-      this->doBind = doBind;
     }
   
     int send(const std::string& message)
@@ -49,12 +47,10 @@ class Client {
         std::cout << "\nInvalid address/ Address not supported \n";
         return -1;
       }
-      if (this->doBind) {
-        // Bind the socket to the client address
-        if (bind(client_fd, (struct sockaddr *)&clientAddress, sizeof(clientAddress)) < 0) {
-          std::cout << "Bind failed\n";
-          return -1;
-        }
+      // Bind the socket to the client address
+      if (bind(client_fd, (struct sockaddr *)&clientAddress, sizeof(clientAddress)) < 0) {
+        std::cout << "Bind failed\n";
+        return -1;
       }
       // Connect to server
       if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {

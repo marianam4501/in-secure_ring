@@ -13,22 +13,22 @@ class Client {
   private:
     std::string sourceIP;
     std::string destinyIP;
-    bool bind;
+    bool doBind;
 
   public:
-    Client(std::string sourceIP, std::string destinyIP, const bool bind) {
+    Client(std::string sourceIP, std::string destinyIP, const bool doBind) {
       this->sourceIP = sourceIP;
       this->destinyIP = destinyIP;
-      this->bind = bind;
+      this->doBind = doBind;
     }
   
     int send(const std::string& message)
     {
       int client_fd;
-      struct sockaddr_in serv_addr, clientAddress;
+      struct sockaddr_in serv_addr;
+      struct sockaddr_in clientAddress;
       const char* messageP = message.c_str();
-      if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-      {
+      if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         std::cout << "\n Socket creation error \n";
         return -1;
       }
@@ -37,29 +37,29 @@ class Client {
       memset(&clientAddress, 0, sizeof(clientAddress));
       clientAddress.sin_family = AF_INET;
       clientAddress.sin_port = htons(PORT);
-      if(this->bind) {
-        if (inet_pton(AF_INET, this->sourceIP.c_str(), &clientAddress.sin_addr) <= 0)
-        {
-          std::cout << "\nInvalid address/ Address not supported \n";
-          return -1;
-        }
+      if (inet_pton(AF_INET, this->sourceIP.c_str(), &clientAddress.sin_addr) <= 0) {
+        std::cout << "\nInvalid address/ Address not supported \n";
+        return -1;
       }
       // Seteando la ip a la que le voy a mandar el mensaje
       memset(&serv_addr, 0, sizeof(serv_addr));
       serv_addr.sin_family = AF_INET;
       serv_addr.sin_port = htons(PORT);
-      if (inet_pton(AF_INET, this->destinyIP.c_str(), &serv_addr.sin_addr) <= 0)
-      {
+      if (inet_pton(AF_INET, this->destinyIP.c_str(), &serv_addr.sin_addr) <= 0) {
         std::cout << "\nInvalid address/ Address not supported \n";
         return -1;
       }
-      if(this->bind) {
-        // Connect to server
-        if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-        {
-          std::cout << "\nConnection Failed \n";
+      if (this->doBind) {
+        // Bind the socket to the client address
+        if (bind(client_fd, (struct sockaddr *)&clientAddress, sizeof(clientAddress)) < 0) {
+          std::cout << "Bind failed\n";
           return -1;
         }
+      }
+      // Connect to server
+      if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        std::cout << "\nConnection Failed \n";
+        return -1;
       }
       size_t totalSent = 0;
       size_t messageSize = message.length();

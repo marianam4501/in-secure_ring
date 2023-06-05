@@ -57,7 +57,7 @@ class Server {
         }
     }
 
-    std::vector<unsigned char> start(const bool closeServer = false) {
+    std::vector<unsigned char> start() {
         int addrlen = sizeof(address_);
         if ((new_socket_ = accept(server_fd_, (struct sockaddr*)&address_, (socklen_t*)&addrlen)) < 0) {
             throw std::runtime_error("accept");
@@ -75,9 +75,6 @@ class Server {
             throw std::runtime_error("send");
         }
         close(new_socket_);
-        if(closeServer) {
-            close(server_fd_);
-        }
         return received_message;
     }
 };

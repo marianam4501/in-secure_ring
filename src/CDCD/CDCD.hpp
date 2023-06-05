@@ -89,13 +89,12 @@ class CDCD {
                     message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
                     if(this->client->send(message) == 0){
                         this->writeLog("Message sended");
-                        std::cout << "Sended: [" << message << "]\n";
-                        std::cout << "Length: [" << message.length() << "]\n";
+                        std::cout << "Sended: [" << message << "]\nLength: [" << message.length() << "]\n";
                         int file_count = std::stoi(last_msg_processed);
                         file_count++;
                         last_msg_processed = convertToZeroPaddedString(file_count);
                         FileManager::Write(last_msg_processed, message_count_path);
-                        sleep(1);
+                        sleep(3);
                     }
                 } 
             } catch (const std::exception& e) {
@@ -113,12 +112,12 @@ class CDCD {
         const bool stop = false;
         while (!stop) {
             try {
-                std::vector<unsigned char> message = this->server->start(true);
+                std::vector<unsigned char> message = this->server->start();
                 std::string received_message(message.begin(), message.end());
                 this->client->send(received_message);
                 std::cout << "Resend: [" << received_message << "]\n";
                 this->writeLog("Message received and resended to next computer");
-                this->server->prepareServer();
+                sleep(3);
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tresendCDCD error" << std::endl;

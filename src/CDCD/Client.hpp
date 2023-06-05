@@ -34,7 +34,7 @@ class Client {
       // Create socket
       memset(&clientAddress, 0, sizeof(clientAddress));
       clientAddress.sin_family = AF_INET;
-      clientAddress.sin_port = htons(PORT);
+      clientAddress.sin_port = htons(0);
       if (inet_pton(AF_INET, this->sourceIP.c_str(), &clientAddress.sin_addr) <= 0) {
         std::cout << "\nInvalid address/ Address not supported \n";
         return -1;

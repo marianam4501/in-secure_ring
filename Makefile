@@ -79,3 +79,18 @@ clean:
 
 5: 
 		./build/mainCDCD m 192.168.5.45 192.168.5.41
+
+11: 
+		./build/mainEAEA m 192.168.5.41 192.168.5.42
+
+22: 
+		./build/mainEAEA m 192.168.5.42 192.168.5.43
+
+33: 
+		./build/mainEAEA r 192.168.5.43 Argumento_innecesario
+
+44: 
+		./build/mainEAEA s 192.168.5.44 192.168.5.45
+
+55: 
+		./build/mainEAEA m 192.168.5.45 192.168.5.41

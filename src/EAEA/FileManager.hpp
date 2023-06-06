@@ -67,22 +67,22 @@ class FileManager {
 		int file_count = std::stoi(filename);
 		if(file_count > -1 && file_count < 1000000){
 			// Valid filename
-			std::cout << "Filename: " << filename << std::endl;
-			std::cout << "File count: " << file_count << std::endl;
+			//std::cout << "Filename: " << filename << std::endl;
+			//std::cout << "File count: " << file_count << std::endl;
 			std::string filePath = directoryPath + "/" + filename + ".txt";
-			std::cout << "This path is about to be written: "<<filePath<<std::endl;
+			//std::cout << "This path is about to be written: "<<filePath<<std::endl;
 			FileManager::Write(message, filePath);
 			file_count++;
-			std::cout << "File count: " << file_count << std::endl;
+			//std::cout << "File count: " << file_count << std::endl;
 			filename = this->convertToZeroPaddedString(file_count);
-			std::cout << "Next filename: " << filename << std::endl;
+			//std::cout << "Next filename: " << filename << std::endl;
 			FileManager::Write(filename, next_filename);
 			result = 0;
 		} else {
 			std::cout << "Ha ocurrido un error. No se pueden generar nuevos mensajes porque se ha excedido el limite.\n";
 		}
 		if(result == 0){
-			std::cout << "The message has been successfully stored. \n";
+			//std::cout << "The message has been successfully stored. \n";
 		} else if(result == -1){
 			std::cout << "Error: Message wasn't saved. \n";
 		}

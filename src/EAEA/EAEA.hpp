@@ -86,9 +86,11 @@ class EAEA {
                         std::system(extractPubKey.c_str());
                         std::string verify = verifyCommandPt1 + messageParts.at(2) + verifyCommandPt2;
                         std::string verifyResult = getCommandOutput(verify);
-                        if(verifyResult == "Verified OK"){
+                        std::cout << "verifyResult: {" << verifyResult << "}\n";
+                        if(verifyResult == "Verified OK\n"){
                             this->writeLog("The signature was verified and it is OK. The message remains intact.");
                             this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
+                            std::cout << "Send start\n";
                             if(this->client->send(message) == 0){
                                 this->writeLog("Message sended");
                                 std::cout << "Sended: [" << message << "]\n";
@@ -100,7 +102,7 @@ class EAEA {
                                 last_msg_processed = convertToZeroPaddedString(file_count);
                                 fileManager.Write(last_msg_processed, last_msg_processed_path);
                             }
-                        } else if (verifyResult == "Verification Failure"){
+                        } else if (verifyResult == "Verification Failure\n"){
                             this->writeLog("The signature was verified and it is invalid. Message discarded.");
                             std::string last_msg_processed_path = "/home/fabian.gonzalezrojas/EAEA/" + messageParts.at(0) + "/000000.txt";
                             std::string last_msg_processed = fileManager.Read(last_msg_processed_path);

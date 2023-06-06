@@ -106,7 +106,7 @@ class FileManager {
 			lines.pop_back();
 			std::string hashed;
 			for(int i = 1; i < lines.size(); i++){
-				hashed+=lines.at(i);
+				hashed+=lines.at(i)+"\n";
 			}
 			messageParts.push_back(hashed);
 			messageParts.push_back(message);

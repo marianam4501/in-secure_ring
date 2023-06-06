@@ -9,15 +9,14 @@
 #include <cstring>
 #include "Server.hpp"
 #include "Client.hpp"
-#include "Cryptographer.hpp"
 #include "FileManager.hpp"
 #include <vector>
+#include <cstdlib>
 
 class EAEA {
   private:
     Server *server;
     Client *client;
-    Cryptographer *cryptographer;
     std::string type;
     FileManager fileManager;
 
@@ -27,17 +26,14 @@ class EAEA {
         if (type.compare("s") == 0) {
             this->client = new Client(clientIP);
             this->server = NULL;
-            this->cryptographer = new Cryptographer();
         }
         if (type.compare("m") == 0) {
             this->client = new Client(clientIP);
             this->server = new Server(serverIP);
-            this->cryptographer = NULL;
         }
         if (type.compare("r") == 0) {
             this->client = NULL;
             this->server = new Server(serverIP);
-            this->cryptographer = new Cryptographer();
         }
         this->type = type;
     }
@@ -48,9 +44,6 @@ class EAEA {
         }
         if (this->client != NULL) {
             free(this->client);
-        }
-        if (this->cryptographer != NULL) {
-            free(this->cryptographer);
         }
     }
 
@@ -73,31 +66,51 @@ class EAEA {
     }
 
   private:
+    const std::string extractPubKeyPt1 = "openssl x509 -pubkey -noout -in ";
+    const std::string extractPubKeyPt2 = " > /home/mariana.murilloquintana/in-secure_ring/src/EAEA/ca/private/pubkey.pem";
+    const std::string verifyCommandPt1 = "bash -c \"echo -n '";
+    const std::string verifyCommandPt2 = "' | openssl dgst -sha256 -verify <(openssl rsa -pubin -inform PEM -in /home/mariana.murilloquintana/in-secure_ring/src/EAEA/ca/private/pubkey.pem) -signature /home/mariana.murilloquintana/in-secure_ring/src/EAEA/ca/private/firma.sha256\"";;
+
     bool send() {
         std::cout << "Send start\n";
-        std::string message_count_path = "/home/fabian.gonzalezrojas/CDCD/000000.txt";
-        std::string path = "/home/fabian.gonzalezrojas/CDCD/";
         const bool stop = false;
         while (!stop) {
             try {
-                std::string last_msg_processed = fileManager.Read(message_count_path);
-                std::string message = "";
-                message = fileManager.Read(path+last_msg_processed+".txt");
-                if(!message.empty()){
-                    std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
-                    this->writeLog("Sending message");
-                    message = this->cryptographer->signMessage("fabian.gonzalezrojas", message,"./src/public_key.pem"); 
-                    if(this->client->send(message) == 0){
-                        this->writeLog("Message sended");
-                        std::cout << "Sended: [" << message << "]\n";
-                        std::cout << "Length: [" << message.length() << "]\n";
-                        int file_count = std::stoi(last_msg_processed);
-                        file_count++;
-                        last_msg_processed = convertToZeroPaddedString(file_count);
-                        fileManager.Write(last_msg_processed, message_count_path);
-                        sleep(1);
+                std::vector<std::string> messages = fileManager.searchForMessages();
+                for(const auto& message : messages){
+                    if(!message.empty()){
+                        std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
+                        std::string certPath = "/home/mariana.murilloquintana/in-secure_ring/src/EAEA/ca/certs/"+messageParts.at(0)+".crt";
+                        fileManager.Write(messageParts.at(2),"/home/mariana.murilloquintana/in-secure_ring/src/EAEA/ca/private/firma.sha256");
+                        std::string extractPubKey = this->extractPubKeyPt1 + certPath + this->extractPubKeyPt2;
+                        std::system(extractPubKey.c_str());
+                        std::string verify = verifyCommandPt1 + messageParts.at(3) + verifyCommandPt2;
+                        std::string verifyResult = getCommandOutput(verifyCommand);
+                        if(verifyResult == "Verified OK"){
+                            this->writeLog("The signature was verified and it is OK. The message remains intact.");
+                            this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
+                            if(this->client->send(message) == 0){
+                                this->writeLog("Message sended");
+                                std::cout << "Sended: [" << message << "]\n";
+                                std::cout << "Length: [" << message.length() << "]\n";
+                                std::string last_msg_processed_path = "/home/mariana.murilloquintana/EAEA/" + messageParts.at(0) + "/000000.txt";
+                                std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
+                                int file_count = std::stoi(last_msg_processed);
+                                file_count++;
+                                last_msg_processed = convertToZeroPaddedString(file_count);
+                                fileManager.Write(last_msg_processed, last_msg_processed_path);
+                            }
+                        } else if (verifyResult == "Verification Failure"){
+                            this->writeLog("The signature was verified and it is invalid. Message discarded.");
+                            std::string last_msg_processed_path = "/home/mariana.murilloquintana/EAEA/" + messageParts.at(0) + "/000000.txt";
+                            std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
+                            int file_count = std::stoi(last_msg_processed);
+                            file_count++;
+                            last_msg_processed = convertToZeroPaddedString(file_count);
+                            fileManager.Write(last_msg_processed, last_msg_processed_path);
+                        }
                     }
-                } 
+                }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tsendCDCD error" << std::endl;
@@ -184,6 +197,22 @@ class EAEA {
         openlog("Program [EAEA] ", LOG_PID, LOG_LOCAL4);
         syslog(LOG_NOTICE, "%s", message.c_str());
         closelog();
+    }
+
+    std::string getCommandOutput(const std::string& command) {
+        std::string result;
+        char buffer[128];
+        FILE* pipe = popen(command.c_str(), "r");
+        if (!pipe) {
+            throw std::runtime_error("Error al ejecutar el comando");
+        }
+        while (!feof(pipe)) {
+            if (fgets(buffer, 128, pipe) != nullptr) {
+                result += buffer;
+            }
+        }
+        pclose(pipe);
+        return result;
     }
 };
 

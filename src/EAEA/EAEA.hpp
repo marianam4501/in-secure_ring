@@ -80,13 +80,7 @@ class EAEA {
                 for(const auto& message : messages){
                     if(!message.empty()){
                         std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
-                        std::string certPath = "/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/certs/"+messageParts.at(0)+".crt";
-                        fileManager.Write(messageParts.at(1),"/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/firma.sha256");
-                        std::string extractPubKey = this->extractPubKeyPt1 + certPath + this->extractPubKeyPt2;
-                        std::system(extractPubKey.c_str());
-                        std::string verify = verifyCommandPt1 + messageParts.at(2) + verifyCommandPt2;
-                        std::string verifyResult = getCommandOutput(verify);
-                        std::cout << "verifyResult: {" << verifyResult << "}\n";
+                        std::string verifyResult = verifySignature(message);
                         if(verifyResult == "Verified OK\n"){
                             this->writeLog("The signature was verified and it is OK. The message remains intact.");
                             this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
@@ -131,9 +125,19 @@ class EAEA {
             try {
                 std::vector<unsigned char> message = this->server->start();
                 std::string received_message(message.begin(), message.end());
-                this->client->send(received_message);
-                std::cout << "Resend: [" << received_message << "]\n";
-                this->writeLog("Message received and resended to next computer");
+                std::vector<std::string> messageParts = fileManager.SplitMessageFile(received_message);
+                std::string verifyResult = verifySignature(received_message);
+                if(verifyResult == "Verified OK\n"){
+                    this->writeLog("The signature was verified and it is OK. The message remains intact.");
+                    this->writeLog("Resending message from "+ messageParts.at(0)/*el usuario*/);
+                    if(this->client->send(received_message) == 0){
+                        this->writeLog("Message resended");
+                        std::cout << "Resended: [" << received_message << "]\n";
+                        this->writeLog("Message received and resended to next computer");
+                    }
+                } else if (verifyResult == "Verification Failure\n"){
+                    this->writeLog("The signature was verified and it is invalid. Message discarded.");
+                }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tresendEAEA error" << std::endl;
@@ -151,11 +155,17 @@ class EAEA {
             try {
                 std::vector<unsigned char> message = this->server->start();
                 std::string received_message(message.begin(), message.end());
-                std::cout << "Length received: [" << received_message.length() << "]\n";
-                this->writeLog("Message received");
-                this->fileManager.saveMessage(received_message);
-                this->writeLog("Message stored");
-                std::cout << "Received: [" << received_message << "]\n";
+                std::vector<std::string> messageParts = fileManager.SplitMessageFile(received_message);
+                std::string verifyResult = verifySignature(received_message);
+                if(verifyResult == "Verified OK\n"){
+                    this->writeLog("The signature was verified and it is OK. The message remains intact.");
+                    this->writeLog("Receiving message from "+ messageParts.at(0)/*el usuario*/);
+                    fileManager.saveMessage(received_message);
+                    this->writeLog("Message stored");
+                    std::cout << "Received: [" << received_message << "]\n";
+                } else if (verifyResult == "Verification Failure\n"){
+                    this->writeLog("The signature was verified and it is invalid. Message discarded.");
+                }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\treceiveEAEA error" << std::endl;
@@ -210,6 +220,18 @@ class EAEA {
         }
         pclose(pipe);
         return result;
+    }
+
+    std::string verifySignature(std::string message){
+        std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
+        std::string certPath = "/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/certs/"+messageParts.at(0)+".crt";
+        fileManager.Write(messageParts.at(1),"/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/firma.sha256");
+        std::string extractPubKey = this->extractPubKeyPt1 + certPath + this->extractPubKeyPt2;
+        std::system(extractPubKey.c_str());
+        std::string verify = verifyCommandPt1 + messageParts.at(2) + verifyCommandPt2;
+        std::string verifyResult = getCommandOutput(verify);
+        std::cout << "verifyResult: {" << verifyResult << "}\n";
+        return verifyResult;
     }
 };
 

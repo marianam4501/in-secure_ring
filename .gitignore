@@ -32,6 +32,7 @@
 *.app
 
 *build/*
+*src/EAEA/ca/solicitudes*
 *src/EAEA/ca/private*
 *src/EAEA/ca/newcerts*
 *src/EAEA/ca/index.txt.attr.old

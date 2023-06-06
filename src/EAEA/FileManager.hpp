@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 namespace fs = std::filesystem;
 
@@ -85,6 +86,34 @@ class FileManager {
 		} else if(result == -1){
 			std::cout << "Error: Message wasn't saved. \n";
 		}
+	}
+
+	std::vector<std::string> ReadMessageFile(const std::string& filename){
+		std::string fileContent = this->Read(filename);
+		std::vector<std::string> messageParts;
+		if(!fileContent.empty()){
+			std::vector<std::string> lines;
+			std::istringstream iss(fileContent);
+			std::string line;
+			
+			while (std::getline(iss, line)) {
+				lines.push_back(line);
+			}
+
+			messageParts.push_back(lines.front());
+			std::string message = lines.back();
+			lines.pop_back();
+			std::string hashed;
+			for(int i = 1; i < lines.size(); i++){
+				hashed+=lines.at(i);
+			}
+			messageParts.push_back(hashed);
+			messageParts.push_back(message);
+			// for(int i = 0; i < messageParts.size(); i++){
+			// 	std::cout << "Part "<< i << ": "<<messageParts.at(i) << std::endl;
+			// }
+		}
+		return messageParts;
 	}
 
 	std::string Read(const std::string& filename) {

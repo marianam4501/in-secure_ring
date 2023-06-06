@@ -60,8 +60,10 @@ class FileManager {
 		return messages;
 	}
 
-	void saveMessage(std::string message, std::string directoryPath){
+	void saveMessage(std::string message){
 		int result = -1;
+		std::vector<std::string> messageParts = SplitMessageFile(message);
+		std::string directoryPath = "/home/mariana.murilloquintana/EAEA/"+messageParts.at(0);
 		std::string next_filename = directoryPath + "/next.txt";
 		std::string filename = FileManager::Read(next_filename);
 		int file_count = std::stoi(filename);

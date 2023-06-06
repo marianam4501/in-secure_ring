@@ -24,11 +24,11 @@ class EAEA {
     EAEA(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
         if (type.compare("s") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client(serverIP, clientIP);
             this->server = NULL;
         }
         if (type.compare("m") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client(serverIP, clientIP);
             this->server = new Server(serverIP);
         }
         if (type.compare("r") == 0) {

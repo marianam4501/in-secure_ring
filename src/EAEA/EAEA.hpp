@@ -81,10 +81,10 @@ class EAEA {
                     if(!message.empty()){
                         std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
                         std::string certPath = "/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/certs/"+messageParts.at(0)+".crt";
-                        fileManager.Write(messageParts.at(2),"/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/firma.sha256");
+                        fileManager.Write(messageParts.at(1),"/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/firma.sha256");
                         std::string extractPubKey = this->extractPubKeyPt1 + certPath + this->extractPubKeyPt2;
                         std::system(extractPubKey.c_str());
-                        std::string verify = verifyCommandPt1 + messageParts.at(3) + verifyCommandPt2;
+                        std::string verify = verifyCommandPt1 + messageParts.at(2) + verifyCommandPt2;
                         std::string verifyResult = getCommandOutput(verify);
                         if(verifyResult == "Verified OK"){
                             this->writeLog("The signature was verified and it is OK. The message remains intact.");
@@ -109,11 +109,12 @@ class EAEA {
                             last_msg_processed = convertToZeroPaddedString(file_count);
                             fileManager.Write(last_msg_processed, last_msg_processed_path);
                         }
+                        sleep(3);
                     }
                 }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
-                std::cerr << "\t\tsendCDCD error" << std::endl;
+                std::cerr << "\t\tsendEAEA error" << std::endl;
                 return false;
             }
         }
@@ -133,7 +134,7 @@ class EAEA {
                 this->writeLog("Message received and resended to next computer");
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
-                std::cerr << "\t\tresendCDCD error" << std::endl;
+                std::cerr << "\t\tresendEAEA error" << std::endl;
                 return false;
             }
         }
@@ -155,7 +156,7 @@ class EAEA {
                 std::cout << "Received: [" << received_message << "]\n";
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
-                std::cerr << "\t\treceiveCDCD error" << std::endl;
+                std::cerr << "\t\treceiveEAEA error" << std::endl;
                 return false;
             }
         }

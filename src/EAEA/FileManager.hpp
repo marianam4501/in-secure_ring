@@ -32,20 +32,20 @@ class FileManager {
 
 			if (!foundFiles.empty())
 			{
-				std::cout << "Archivos encontrados:" << std::endl;
+				// std::cout << "Archivos encontrados:" << std::endl;
 				for (const auto& file : foundFiles)
 				{
-					std::cout << "Directorio: " << file.directoryPath << std::endl;
-					std::cout << "Ruta relativa del archivo: " << file.filePath << std::endl;
+					// std::cout << "Directorio: " << file.directoryPath << std::endl;
+					// std::cout << "Ruta relativa del archivo: " << file.filePath << std::endl;
 					std::string nextFile = this->Read(file.filePath);
 					std::string nextFilePath = file.directoryPath + "/" + nextFile + ".txt"; 
-					std::cout << "Next file: "<< nextFilePath << std::endl; 
+					// std::cout << "Next file: "<< nextFilePath << std::endl; 
 					std::string messageContent = this->Read(nextFilePath);
 					if(messageContent != ""){
-						std::cout << "Next file content: "<< messageContent << std::endl; 
+						// std::cout << "Next file content: "<< messageContent << std::endl; 
 						messages.push_back(messageContent);
 					}
-					std::cout << std::endl;
+					// std::cout << std::endl;
 				}
 			}
 			else
@@ -120,8 +120,8 @@ class FileManager {
 	std::string Read(const std::string& filename) {
 		std::ifstream file(filename);
 		if (!file) {
-		std::cerr << "Error: Could not open file '" << filename << "' for reading." << std::endl;
-		return "";
+			//std::cerr << "Error: Could not open file '" << filename << "' for reading." << std::endl;
+			return "";
 		}
 		std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 		file.close();

@@ -7,13 +7,33 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
-
+#include <sys/stat.h>
 #include <fstream>
 #include <chrono>
 
 #include "CDCD.hpp"
 
+void daemonize()
+{
+    pid_t pid = fork();
+    if (pid < 0) {
+        exit(EXIT_FAILURE);
+    }
+    if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+    umask(0);
+    pid_t sid = setsid();
+    if (sid < 0) {
+        exit(EXIT_FAILURE);
+    }
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+}
+
 int main(int argc, char *argv[]) {
+    daemonize();
     std::string type = argv[1];
     std::string serverIP = argv[2];
     std::string clientIP = argv[3];

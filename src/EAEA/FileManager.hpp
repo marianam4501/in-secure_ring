@@ -88,8 +88,7 @@ class FileManager {
 		}
 	}
 
-	std::vector<std::string> ReadMessageFile(const std::string& filename){
-		std::string fileContent = this->Read(filename);
+	std::vector<std::string> SplitMessageFile(const std::string& fileContent){
 		std::vector<std::string> messageParts;
 		if(!fileContent.empty()){
 			std::vector<std::string> lines;

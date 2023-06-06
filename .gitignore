@@ -32,7 +32,11 @@
 *.app
 
 *build/*
-*src/EAEA/ca/*
+*src/EAEA/ca/private*
+*src/EAEA/ca/newcerts*
+*src/EAEA/ca/index.txt.attr.old
+*src/EAEA/ca/index.txt.old
+*src/EAEA/ca/serial.old
 
 *src/private_key.pem
 *src/public_key.pem

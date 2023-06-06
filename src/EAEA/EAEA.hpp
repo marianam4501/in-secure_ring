@@ -85,7 +85,7 @@ class EAEA {
                         std::string extractPubKey = this->extractPubKeyPt1 + certPath + this->extractPubKeyPt2;
                         std::system(extractPubKey.c_str());
                         std::string verify = verifyCommandPt1 + messageParts.at(3) + verifyCommandPt2;
-                        std::string verifyResult = getCommandOutput(verifyCommand);
+                        std::string verifyResult = getCommandOutput(verify);
                         if(verifyResult == "Verified OK"){
                             this->writeLog("The signature was verified and it is OK. The message remains intact.");
                             this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
@@ -149,16 +149,10 @@ class EAEA {
                 std::vector<unsigned char> message = this->server->start();
                 std::string received_message(message.begin(), message.end());
                 std::cout << "Length received: [" << received_message.length() << "]\n";
-                std::vector<std::string> messageParts = this->split(received_message, '\n');
                 this->writeLog("Message received");
-                if (this->cryptographer->validHash(messageParts[1], messageParts[2])) {
-                    // generator.createMessage(messageParts[2]);
-                    this->writeLog("Message stored");
-                    std::cout << "Received: [" << messageParts[2] << "]\n";
-                } else {
-                    this->writeLog("Invalid message for this user");
-                    std::cout << "Invalid message for this user\n";
-                }
+                this->fileManager.saveMessage(received_message);
+                this->writeLog("Message stored");
+                std::cout << "Received: [" << received_message << "]\n";
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\treceiveCDCD error" << std::endl;

@@ -9,8 +9,8 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Cryptographer.hpp"
-#include "../FileManager.hpp"
-#include "../MessageGenerator.hpp"
+#include "FileManager.hpp"
+#include "MessageGenerator.hpp"
 #include <vector>
 
 class CDCD {
@@ -25,12 +25,12 @@ class CDCD {
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
         if (type.compare("s") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client(serverIP, clientIP);
             this->server = NULL;
             this->cryptographer = new Cryptographer();
         }
         if (type.compare("m") == 0) {
-            this->client = new Client(clientIP);
+            this->client = new Client(serverIP, clientIP);
             this->server = new Server(serverIP);
             this->cryptographer = NULL;
         }
@@ -89,13 +89,12 @@ class CDCD {
                     message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
                     if(this->client->send(message) == 0){
                         this->writeLog("Message sended");
-                        std::cout << "Sended: [" << message << "]\n";
-                        std::cout << "Length: [" << message.length() << "]\n";
+                        std::cout << "Sended: [" << message << "]\nLength: [" << message.length() << "]\n";
                         int file_count = std::stoi(last_msg_processed);
                         file_count++;
                         last_msg_processed = convertToZeroPaddedString(file_count);
                         FileManager::Write(last_msg_processed, message_count_path);
-                        sleep(1);
+                        sleep(3);
                     }
                 } 
             } catch (const std::exception& e) {
@@ -118,6 +117,7 @@ class CDCD {
                 this->client->send(received_message);
                 std::cout << "Resend: [" << received_message << "]\n";
                 this->writeLog("Message received and resended to next computer");
+                sleep(3);
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tresendCDCD error" << std::endl;
@@ -138,8 +138,8 @@ class CDCD {
                 std::cout << "Length received: [" << received_message.length() << "]\n";
                 std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
                 this->writeLog("Message received");
-                this->writeLog("Message stored");
                 generator.createMessage(decrypted_message);
+                this->writeLog("Message stored");
                 std::cout << "Received: [" << decrypted_message << "]\n";
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
@@ -166,7 +166,7 @@ class CDCD {
     }
 
     void writeLog(const std::string message) {
-        openlog("Program [CDCD] ", LOG_PID, LOG_LOCAL4);
+        openlog("Program G4 [CDCD] ", LOG_PID, LOG_LOCAL4);
         syslog(LOG_NOTICE, "%s", message.c_str());
         closelog();
     }

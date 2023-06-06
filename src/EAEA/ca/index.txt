@@ -1,0 +1,10 @@
+V	240523012524Z		1000	unknown	/CN=mariana.murilloquintana/ST=San Jose/C=CR/emailAddress=mariana.murilloquintana@ucr.ac.cr/O=UCR/OU=ECCI
+V	240523012832Z		1001	unknown	/CN=fabian.gonzalezrojas/ST=San Jose/C=CR/O=UCR/OU=ECCI
+V	240603213839Z		1002	unknown	/CN=cesar.lopezurena@ucr.ac.cr/ST=San Jose/C=CR/O=UCR/OU=ECCI
+V	240603213902Z		1003	unknown	/CN=jeremy.vargasartavia/ST=San Jose/C=CR/O=UCR/OU=ECCI
+V	240603213927Z		1004	unknown	/CN=leonel.campos/ST=San Jose/C=CR/emailAddress=leonel.campos@ucr.ac.cr/O=UCR/OU=ECCI
+V	240603213948Z		1005	unknown	/CN=maeva.murcia/ST=San Jose/C=CR/O=UCR/OU=ECCI
+V	240603214008Z		1006	unknown	/CN=manuel.arroyo/ST=San Jose/C=CR/O=UCR/OU=ECCI
+V	240603214020Z		1007	unknown	/CN=nayeri.azofeifa/ST=San Jose/C=CR/emailAddress=nayeri.azofeifa@ucr.ac.acr/O=UCR/OU=ECCI
+V	240603214043Z		1008	unknown	/CN=rodrigo.piedra/ST=San Jose/C=CR/O=UCR/OU=ECCI
+V	240603214058Z		1009	unknown	/CN=angie.castillocampos/ST=San Jose/C=CR/emailAddress=angie.castillocampos@ucr.ac.cr/O=UCR/OU=ECCI

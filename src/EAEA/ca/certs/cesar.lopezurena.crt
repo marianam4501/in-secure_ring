@@ -1,0 +1,59 @@
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number: 4098 (0x1002)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=CR, ST=San Jose, L=San Pedro, O=UCR, OU=ECCI, CN=Equipo 4
+        Validity
+            Not Before: Jun  4 21:38:39 2023 GMT
+            Not After : Jun  3 21:38:39 2024 GMT
+        Subject: CN=cesar.lopezurena@ucr.ac.cr, ST=San Jose, C=CR, O=UCR, OU=ECCI
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:de:5d:cf:db:d8:dd:57:5b:e5:64:51:84:93:e3:
+                    b6:f5:e2:da:9b:11:f2:a4:dc:83:e9:05:5f:a2:8b:
+                    5e:db:e4:46:be:55:89:c9:ce:3d:51:24:a7:2c:f3:
+                    2e:95:6f:b6:38:8c:6d:76:33:7b:f7:82:26:79:8f:
+                    dd:51:69:bb:c9:b7:b3:72:60:84:87:3a:aa:52:01:
+                    99:c8:f2:74:51:6a:0f:95:7e:de:17:a0:63:b0:0a:
+                    9c:89:9c:bd:d9:b0:07:6f:86:2f:ac:46:b0:e5:2e:
+                    30:41:aa:95:db:54:1c:99:35:02:33:53:9a:79:84:
+                    62:bb:87:c5:c7:03:bd:4d:cd:6f:49:db:de:3b:d9:
+                    9e:ac:88:d4:c7:68:2f:3b:01:a4:91:83:13:38:d8:
+                    aa:b8:1c:6a:c1:50:c3:83:ff:1b:2d:c1:32:c1:05:
+                    df:1d:da:df:cb:82:48:ef:45:98:83:a8:e1:4c:aa:
+                    46:91:26:76:37:66:58:d8:c6:b5:38:5b:b5:c8:66:
+                    51:fc:4d:a6:28:82:6c:9c:aa:c6:0e:f8:4f:70:16:
+                    12:6d:6d:bf:bd:70:f9:c9:c0:39:a8:bb:5c:a4:50:
+                    3c:9d:66:be:5e:95:04:2d:35:b9:1e:51:01:02:69:
+                    66:ee:97:70:76:c8:45:8b:3f:9e:3c:80:81:32:ac:
+                    cc:b5
+                Exponent: 65537 (0x10001)
+    Signature Algorithm: sha256WithRSAEncryption
+         41:9d:1d:33:12:e7:01:a6:f1:93:15:71:2d:69:bf:61:f4:8e:
+         d5:db:81:e7:5c:18:b0:21:b4:4a:4e:0b:72:d9:ab:af:1c:0c:
+         54:14:f4:1b:7b:c7:b3:6c:de:64:d5:72:c1:25:7c:9f:90:9d:
+         10:d1:29:7c:17:1b:3d:4b:de:21:28:a9:33:8a:fb:f3:aa:64:
+         7c:71:e3:82:74:1d:8f:a2:39:ed:c9:6d:af:6b:b3:e1:dd:85:
+         80:4a:98:03:5b:85:79:f5:0c:48:e7:f6:6a:8a:68:27:8d:a2:
+         fe:3b:4d:7d:12:3e:81:26:89:d6:ab:bb:0b:17:cb:cc:94:bc:
+         13:fe
+-----BEGIN CERTIFICATE-----
+MIICujCCAiMCAhACMA0GCSqGSIb3DQEBCwUAMGQxCzAJBgNVBAYTAkNSMREwDwYD
+VQQIDAhTYW4gSm9zZTESMBAGA1UEBwwJU2FuIFBlZHJvMQwwCgYDVQQKDANVQ1Ix
+DTALBgNVBAsMBEVDQ0kxETAPBgNVBAMMCEVxdWlwbyA0MB4XDTIzMDYwNDIxMzgz
+OVoXDTI0MDYwMzIxMzgzOVowYjEjMCEGA1UEAwwaY2VzYXIubG9wZXp1cmVuYUB1
+Y3IuYWMuY3IxETAPBgNVBAgMCFNhbiBKb3NlMQswCQYDVQQGEwJDUjEMMAoGA1UE
+CgwDVUNSMQ0wCwYDVQQLDARFQ0NJMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEA3l3P29jdV1vlZFGEk+O29eLamxHypNyD6QVfoote2+RGvlWJyc49USSn
+LPMulW+2OIxtdjN794ImeY/dUWm7ybezcmCEhzqqUgGZyPJ0UWoPlX7eF6BjsAqc
+iZy92bAHb4YvrEaw5S4wQaqV21QcmTUCM1OaeYRiu4fFxwO9Tc1vSdveO9merIjU
+x2gvOwGkkYMTONiquBxqwVDDg/8bLcEywQXfHdrfy4JI70WYg6jhTKpGkSZ2N2ZY
+2Ma1OFu1yGZR/E2mKIJsnKrGDvhPcBYSbW2/vXD5ycA5qLtcpFA8nWa+XpUELTW5
+HlEBAmlm7pdwdshFiz+ePICBMqzMtQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAEGd
+HTMS5wGm8ZMVcS1pv2H0jtXbgedcGLAhtEpOC3LZq68cDFQU9Bt7x7Ns3mTVcsEl
+fJ+QnRDRKXwXGz1L3iEoqTOK+/OqZHxx44J0HY+iOe3Jba9rs+HdhYBKmANbhXn1
+DEjn9mqKaCeNov47TX0SPoEmidaruwsXy8yUvBP+
+-----END CERTIFICATE-----

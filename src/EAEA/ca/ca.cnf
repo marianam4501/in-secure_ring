@@ -1,0 +1,22 @@
+[ca]  
+default_ca = my_ca  
+  
+[my_ca]  
+new_certs_dir = ./newcerts  
+unique_subject = yes  
+certificate = ./certs/ca.cert.pem  
+private_key = ./private/ca.key.pem  
+serial = ./serial  
+crlnumber = ./crlnumber  
+database = ./index.txt  
+default_days = 365  
+default_md = sha256  
+policy = my_policy  
+  
+[my_policy]  
+commonName = supplied  
+stateOrProvinceName = optional  
+countryName = optional  
+emailAddress = optional  
+organizationName = supplied  
+organizationalUnitName = optional

@@ -14,13 +14,6 @@
 #include <vector>
 
 class CDCD {
-  private:
-    Server *server;
-    Client *client;
-    Cryptographer *cryptographer;
-    std::string type;
-    MessageGenerator generator;
-
   public:
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
@@ -73,10 +66,17 @@ class CDCD {
     }
 
   private:
+    Server *server;
+    Client *client;
+    Cryptographer *cryptographer;
+    std::string type;
+    MessageGenerator generator;
+    const std::string PATH_USER = "mariana.murilloquintana";
+    
     bool send() {
         std::cout << "Send start\n";
-        std::string message_count_path = "/home/fabian.gonzalezrojas/CDCD/000000.txt";
-        std::string path = "/home/fabian.gonzalezrojas/CDCD/";
+        std::string message_count_path = "/home/"+PATH_USER+"/CDCD/000000.txt";
+        std::string path = "/home/"+PATH_USER+"/CDCD/";
         const bool stop = false;
         while (!stop) {
             try {

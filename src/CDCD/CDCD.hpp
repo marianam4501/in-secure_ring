@@ -94,7 +94,6 @@ class CDCD {
                         file_count++;
                         last_msg_processed = convertToZeroPaddedString(file_count);
                         FileManager::Write(last_msg_processed, message_count_path);
-                        sleep(3);
                     }
                 } 
             } catch (const std::exception& e) {
@@ -117,7 +116,6 @@ class CDCD {
                 this->client->send(received_message);
                 std::cout << "Resend: [" << received_message << "]\n";
                 this->writeLog("Message received and resended to next computer");
-                sleep(3);
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tresendCDCD error" << std::endl;

@@ -110,7 +110,6 @@ class EAEA {
                                 last_msg_processed = convertToZeroPaddedString(file_count);
                                 fileManager.Write(last_msg_processed, last_msg_processed_path);
                             }
-                            sleep(3);
                         } else {
                             std::cout << "Invalid credentials." << std::endl;
                         }

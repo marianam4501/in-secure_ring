@@ -104,12 +104,13 @@ class EAEA {
                         }
                         std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + messageParts.at(0) + "/000000.txt";
                         std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
-                        if(last_msg_processed == ""){
+                        /*if(last_msg_processed == ""){
                             int file_count = std::stoi(last_msg_processed);
                             file_count++;
                             last_msg_processed = convertToZeroPaddedString(file_count);
                             fileManager.Write(last_msg_processed, last_msg_processed_path);
-                        }
+                        }*/
+                        std::cout << "["+last_msg_processed+"]"
                     }
                 }
             } catch (const std::exception& e) {

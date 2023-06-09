@@ -103,22 +103,26 @@ class EAEA {
                                 }
                             } else if (verifyResult == "Verification Failure\n"){
                                 this->writeLog("The signature was verified and it is invalid. Message discarded.");
-                                std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA/" + messageParts.at(0) + "/000000.txt";
+                                std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + messageParts.at(0) + "/000000.txt";
                                 std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
+                                if(last_msg_processed == ""){
                                 int file_count = std::stoi(last_msg_processed);
                                 file_count++;
                                 last_msg_processed = convertToZeroPaddedString(file_count);
                                 fileManager.Write(last_msg_processed, last_msg_processed_path);
                             }
+                            }
                         } else {
                             std::cout << "Invalid credentials." << std::endl;
                             this->writeLog("Invalid credentials. Message discarded.");
-                            std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA/" + messageParts.at(0) + "/000000.txt";
+                            std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + messageParts.at(0) + "/000000.txt";
                             std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
-                            int file_count = std::stoi(last_msg_processed);
-                            file_count++;
-                            last_msg_processed = convertToZeroPaddedString(file_count);
-                            fileManager.Write(last_msg_processed, last_msg_processed_path);
+                            if(last_msg_processed == ""){
+                                int file_count = std::stoi(last_msg_processed);
+                                file_count++;
+                                last_msg_processed = convertToZeroPaddedString(file_count);
+                                fileManager.Write(last_msg_processed, last_msg_processed_path);
+                            }
                         }
                     }
                 }

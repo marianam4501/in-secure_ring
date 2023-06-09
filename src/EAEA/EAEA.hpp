@@ -112,6 +112,13 @@ class EAEA {
                             }
                         } else {
                             std::cout << "Invalid credentials." << std::endl;
+                            this->writeLog("Invalid credentials. Message discarded.");
+                            std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA/" + messageParts.at(0) + "/000000.txt";
+                            std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
+                            int file_count = std::stoi(last_msg_processed);
+                            file_count++;
+                            last_msg_processed = convertToZeroPaddedString(file_count);
+                            fileManager.Write(last_msg_processed, last_msg_processed_path);
                         }
                     }
                 }

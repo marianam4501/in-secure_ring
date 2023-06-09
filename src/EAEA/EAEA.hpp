@@ -110,7 +110,7 @@ class EAEA {
                             last_msg_processed = convertToZeroPaddedString(file_count);
                             fileManager.Write(last_msg_processed, last_msg_processed_path);
                         }*/
-                        std::cout << "["+last_msg_processed+"]"
+                        std::cout << "["<<last_msg_processed<<"]" << std::endl;
                     }
                 }
             } catch (const std::exception& e) {

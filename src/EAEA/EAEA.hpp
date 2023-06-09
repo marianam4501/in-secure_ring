@@ -14,12 +14,6 @@
 #include <cstdlib>
 
 class EAEA {
-  private:
-    Server *server;
-    Client *client;
-    std::string type;
-    FileManager fileManager;
-
   public:
     EAEA(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
@@ -66,11 +60,20 @@ class EAEA {
     }
 
   private:
-    const std::string extractPubKeyPt1 = "openssl x509 -pubkey -noout -in ";
-    const std::string extractPubKeyPt2 = " > /home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/pubkey.pem";
-    const std::string verifyCommandPt1 = "bash -c \"echo -n '";
-    const std::string verifyCommandPt2 = "' | openssl dgst -sha256 -verify <(openssl rsa -pubin -inform PEM -in /home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/pubkey.pem) -signature /home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/firma.sha256\"";;
+  
+    const std::string PATH_USER = "mariana.murilloquintana";
+    Server *server;
+    Client *client;
+    std::string type;
+    FileManager fileManager;
+    std::vector<std::string> usernames = {"manuel.arroyo", "rodrigo.piedra", "fabian.gonzalezrojas", 
+        "cesar.lopezurena", "nayeri.azofeifa", "leonel.campos", "angie.castillocampos", "mariana.murilloquintana", 
+        "jeremy.vargasartavia", "valery.murcia"};
 
+    const std::string extractPubKeyPt1 = "openssl x509 -pubkey -noout -in ";
+    const std::string extractPubKeyPt2 = " > /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem";
+    const std::string verifyCommandPt1 = "bash -c \"echo -n '";
+    const std::string verifyCommandPt2 = "' | openssl dgst -sha256 -verify <(openssl rsa -pubin -inform PEM -in /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem) -signature /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256\"";
     bool send() {
         std::cout << "Send start\n";
         const bool stop = false;
@@ -80,32 +83,37 @@ class EAEA {
                 for(const auto& message : messages){
                     if(!message.empty()){
                         std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
-                        std::string verifyResult = verifySignature(message);
-                        if(verifyResult == "Verified OK\n"){
-                            this->writeLog("The signature was verified and it is OK. The message remains intact.");
-                            this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
-                            std::cout << "Send start\n";
-                            if(this->client->send(message) == 0){
-                                this->writeLog("Message sended");
-                                std::cout << "Sended: [" << message << "]\n";
-                                std::cout << "Length: [" << message.length() << "]\n";
-                                std::string last_msg_processed_path = "/home/fabian.gonzalezrojas/EAEA/" + messageParts.at(0) + "/000000.txt";
+                        if(validUsername(messageParts.front())){
+                            std::string stateFile = "/home/"+PATH_USER+"/EAEA/"+messageParts.front()+"/estado.txt";
+                            std::string verifyResult = verifySignature(message);
+                            if(verifyResult == "Verified OK\n"){
+                                this->writeLog("The signature was verified and it is OK. The message remains intact and the user is who he/she claims to be.");
+                                this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
+                                std::cout << "Send start\n";
+                                if(this->client->send(message) == 0){
+                                    this->writeLog("Message sended");
+                                    std::cout << "Sended: [" << message << "]\n";
+                                    std::cout << "Length: [" << message.length() << "]\n";
+                                    std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA/" + messageParts.at(0) + "/000000.txt";
+                                    std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
+                                    int file_count = std::stoi(last_msg_processed);
+                                    file_count++;
+                                    last_msg_processed = convertToZeroPaddedString(file_count);
+                                    fileManager.Write(last_msg_processed, last_msg_processed_path);
+                                }
+                            } else if (verifyResult == "Verification Failure\n"){
+                                this->writeLog("The signature was verified and it is invalid. Message discarded.");
+                                std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA/" + messageParts.at(0) + "/000000.txt";
                                 std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
                                 int file_count = std::stoi(last_msg_processed);
                                 file_count++;
                                 last_msg_processed = convertToZeroPaddedString(file_count);
                                 fileManager.Write(last_msg_processed, last_msg_processed_path);
                             }
-                        } else if (verifyResult == "Verification Failure\n"){
-                            this->writeLog("The signature was verified and it is invalid. Message discarded.");
-                            std::string last_msg_processed_path = "/home/fabian.gonzalezrojas/EAEA/" + messageParts.at(0) + "/000000.txt";
-                            std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
-                            int file_count = std::stoi(last_msg_processed);
-                            file_count++;
-                            last_msg_processed = convertToZeroPaddedString(file_count);
-                            fileManager.Write(last_msg_processed, last_msg_processed_path);
+                            sleep(3);
+                        } else {
+                            std::cout << "Invalid credentials." << std::endl;
                         }
-                        sleep(3);
                     }
                 }
             } catch (const std::exception& e) {
@@ -232,6 +240,11 @@ class EAEA {
         std::string verifyResult = getCommandOutput(verify);
         std::cout << "verifyResult: {" << verifyResult << "}\n";
         return verifyResult;
+    }
+
+    bool validUsername(std::string username){
+        auto userFound = std::find(usernames.begin(), usernames.end(), username);
+        return userFound != usernames.end();
     }
 };
 

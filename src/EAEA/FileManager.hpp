@@ -19,7 +19,7 @@ class FileManager {
     };
 
 	std::vector<std::string> searchForMessages(){
-		std::string directoryPath = "/home/fabian.gonzalezrojas/EAEA"; ///ruta/al/directorio
+		std::string directoryPath = "/home/"+PATH_USER+"/EAEA"; ///ruta/al/directorio
 		std::string lastFileProcessed = "000000.txt"; // Reemplaza con el nombre del archivo que estás buscando
 
 		fs::path directory(directoryPath);
@@ -63,7 +63,7 @@ class FileManager {
 	void saveMessage(std::string message){
 		int result = -1;
 		std::vector<std::string> messageParts = SplitMessageFile(message);
-		std::string directoryPath = "/home/fabian.gonzalezrojas/EAEA/"+messageParts.at(0);
+		const std::string directoryPath = "/home/"+PATH_USER+"/EAEA/"+messageParts.at(0);
 		std::string next_filename = directoryPath + "/next.txt";
 		std::string filename = FileManager::Read(next_filename);
 		int file_count = std::stoi(filename);
@@ -131,8 +131,19 @@ class FileManager {
 	bool Write(const std::string& content, const std::string& filename) {
 		std::ofstream file(filename);
 		if (!file) {
-		std::cerr << "Error: Could not open file '" << filename << "' for writing." << std::endl;
-		return false;
+			std::cerr << "Error: Could not open file '" << filename << "' for writing." << std::endl;
+			return false;
+		}
+		file << content;
+		file.close();
+		return true;
+	}
+
+	bool WriteAppend(const std::string& content, const std::string& filename) {
+		std::ofstream file(filename, std::ios::app); // Se abre en modo de escritura y se posiciona al final del archivo
+		if (!file) {
+			std::cerr << "Error: Could not open file '" << filename << "' for writing." << std::endl;
+			return false;
 		}
 		file << content;
 		file.close();
@@ -141,6 +152,7 @@ class FileManager {
 
   private:
 	
+    const std::string PATH_USER = "mariana.murilloquintana";
 	void searchFiles(const fs::path& directory, const std::string& filename, std::vector<FoundFile>& foundFiles)
 	{
 		for (const auto& entry : fs::directory_iterator(directory))

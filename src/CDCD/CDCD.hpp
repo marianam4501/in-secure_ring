@@ -86,7 +86,7 @@ class CDCD {
                 if(!message.empty()){
                     std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
                     this->writeLog("Sending message");
-                    tihs->writeStateFile("Sending message: " + message + "\n");
+                    this->writeStateFile("Sending message: " + message + "\n");
                     message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
                     if(this->client->send(message) == 0){
                         this->writeLog("Message sended");
@@ -175,8 +175,8 @@ class CDCD {
 
     void writeStateFile(const std::string message){
         std::string finalMessage = "Program G4 [CDCD] " + message;
-        std::string stateFilePath = "/home/"+PATH_USER+"/CDCD/estado.txt"
-        FileManager.WriteAppend(finalMessage,stateFilePath);
+        std::string stateFilePath = "/home/"+PATH_USER+"/CDCD/estado.txt";
+        FileManager::WriteAppend(finalMessage,stateFilePath);
     }
 };
 

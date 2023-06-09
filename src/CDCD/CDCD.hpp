@@ -71,7 +71,7 @@ class CDCD {
     Cryptographer *cryptographer;
     std::string type;
     MessageGenerator generator;
-    const std::string PATH_USER = "mariana.murilloquintana";
+    const std::string PATH_USER =  "fabian.gonzalezrojas";
     
     bool send() {
         std::cout << "Send start\n";

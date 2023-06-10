@@ -28,7 +28,7 @@ class FileManager {
     file.close();
     return true;
   }
-  bool WriteAppend(const std::string& content, const std::string& filename) {
+  static bool WriteAppend(const std::string& content, const std::string& filename) {
 		std::ofstream file(filename, std::ios::app); // Se abre en modo de escritura y se posiciona al final del archivo
 		if (!file) {
 			//std::cerr << "Error: Could not open file '" << filename << "' for writing." << std::endl;

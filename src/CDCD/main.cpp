@@ -33,7 +33,7 @@ void daemonize()
 }
 
 int main(int argc, char *argv[]) {
-    //daemonize();
+    daemonize();
     std::string type = argv[1];
     std::string serverIP = argv[2];
     std::string clientIP = argv[3];

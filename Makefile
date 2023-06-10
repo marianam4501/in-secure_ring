@@ -15,8 +15,6 @@ ClientEAEA = -o build/EAEA/ClientEAEA src/EAEA/Client.cpp
 FileManagerEAEA = -o build/EAEA/FileManagerEAEA src/EAEA/FileManager.cpp
 mainEAEA = -o build/EAEA/mainEAEA src/EAEA/main.cpp -lcrypto -lssl # -l syslog # -pthread
 
-test = -o build/cryptographer_test src/cryptographer_test.cpp -lcrypto -lssl # -l syslog
-
 cdcd:
 		mkdir -p build && mkdir -p build/CDCD && \
 		$(CC) $(FLAGS) $(CFLAGS) $(CDCD) $(ServerCDCD) $(ClientCDCD) $(CryptographerCDCD) $(MessageGeneratorCDCD) $(mainCDCD)
@@ -25,29 +23,11 @@ eaea:
 		mkdir -p build && mkdir -p build/EAEA && \
 		$(CC) $(FLAGS) $(CFLAGS) $(EAEA) $(ServerEAEA) $(ClientEAEA) $(FileManagerEAEA)  $(mainEAEA)
 
-test:
+msgEAEA:
 		mkdir -p build && \
-		$(CC) $(CFLAGS) $(test)
+		$(CC) $(CFLAGS) $(FileManagerEAEA) -lcrypto -lssl src/EAEA/MessageGenerator.cpp -o build/message_generatorEAEA
 
-runtest:
-		./build/cryptographer_test
-
-messageGeneratorCDCD:
-		mkdir -p build && \
-		$(CC) $(CFLAGS) src/messageGeneratorTest.cpp -o build/message_generatorCDCD
-
-generatorCDCD:
-		./build/message_generatorCDCD
-
-testFileManagerEAEA:
-		mkdir -p build && \
-		$(CC) $(CFLAGS) src/EAEA/testFileManager.cpp -o build/test_fileManagerEAEA
-
-messageGeneratorEAEA:
-		mkdir -p build && \
-		$(CC) $(CFLAGS) -lcrypto -lssl src/EAEA/MessageGenerator.cpp -o build/message_generatorEAEA
-
-generatorEAEA:
+msg:
 		./build/message_generatorEAEA
 
 clean:

@@ -12,6 +12,7 @@
 #include "FileManager.hpp"
 #include <vector>
 #include <cstdlib>
+#include <ctime>
 
 class EAEA {
   public:
@@ -84,9 +85,11 @@ class EAEA {
                 for(int i = 0; i < messages.size(); ++i){
                     if(!messages.at(i).empty()){
                         std::string logMessage;
+                        bool error = false;
                         std::vector<std::string> messageParts = fileManager.SplitMessageFile(messages.at(i));
                         std::string last_msg_processed_path = directories.at(i) + "/000000.txt";
                         std::string statusFile = directories.at(i)+"/estado.txt";
+                        std::cout << statusFile << std::endl;
                         if(validUsername(messageParts.front())){
                             std::string verifyResult = verifySignature(messages.at(i));
                             if(verifyResult == "Verified OK\n"){
@@ -103,7 +106,7 @@ class EAEA {
                                     this->writeStatusFile(logMessage+"\n",statusFile);
                                     std::cout << "Sended: [" << messages.at(i) << "]\n";
                                     std::cout << "Length: [" << messages.at(i).length() << "]\n";
-                                }
+                                } else { error = true; }
                             } else if (verifyResult == "Verification Failure\n"){
                                 logMessage = "The signature was verified and it is invalid. Message discarded.";
                                 this->writeLog(logMessage);
@@ -115,12 +118,18 @@ class EAEA {
                             this->writeLog(logMessage);
                             this->writeStatusFile(logMessage+"\n",statusFile);
                         }
-                        std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
-                        if(last_msg_processed != ""){
-                            int file_count = std::stoi(last_msg_processed);
-                            file_count++;
-                            last_msg_processed = convertToZeroPaddedString(file_count);
-                            fileManager.Write(last_msg_processed, last_msg_processed_path);
+                        if(!error){
+                            std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
+                            if(last_msg_processed != ""){
+                                int file_count = std::stoi(last_msg_processed);
+                                file_count++;
+                                last_msg_processed = convertToZeroPaddedString(file_count);
+                                fileManager.Write(last_msg_processed, last_msg_processed_path);
+                            }
+                        } else {
+                            logMessage = "Connection failed. Message will be resended.";
+                            this->writeLog(logMessage);
+                            this->writeStatusFile(logMessage+"\n",statusFile);
                         }
                     }
                 }
@@ -266,7 +275,14 @@ class EAEA {
     }
 
     void writeStatusFile(const std::string message, std::string statusFilePath){
-        std::string finalMessage = "Program G4 [EAEA] " + message;
+        std::time_t now = std::time(nullptr);
+        std::string currentTime = std::ctime(&now);
+        size_t pos = currentTime.find('\n');
+        if (pos != std::string::npos) {
+            // Eliminar el carácter de salto de línea
+            currentTime.erase(pos);
+        }
+        std::string finalMessage = "Program G4 [EAEA] " +currentTime +": "+ message;
         fileManager.WriteAppend(finalMessage,statusFilePath);
     }
 };

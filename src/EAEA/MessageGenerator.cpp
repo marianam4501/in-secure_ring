@@ -4,10 +4,13 @@
 #include <algorithm>
 
 const std::string PATH_USER =  "mariana.murilloquintana";
+
 std::string getCommandOutput(const std::string& command);
+
 bool validUsername(std::string username);std::vector<std::string> usernames = {"manuel.arroyo", "rodrigo.piedra", "fabian.gonzalezrojas", 
         "cesar.lopezurena", "nayeri.azofeifa", "leonel.campos", "angie.castillocampos", "mariana.murilloquintana", 
         "jeremy.vargasartavia", "valery.murcia"};
+
 int main(){
     std::string username = "";
     std::cout << "Enter your username: ";

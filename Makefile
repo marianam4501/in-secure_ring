@@ -1,5 +1,5 @@
 CC = g++
-#FLAGS = -Wall -Wextra -g -std=c++11 # No warnings por ahora
+FLAGS = -Wall -Wextra
 CFLAGS = -g -std=c++17
 
 CDCD = -o build/CDCD/CDCD src/CDCD/CDCD.cpp
@@ -9,16 +9,21 @@ CryptographerCDCD = -o build/CDCD/CryptographerCDCD src/CDCD/Cryptographer.cpp
 MessageGeneratorCDCD = -o build/CDCD/MessageGeneratorCDCD src/CDCD/MessageGenerator.cpp
 mainCDCD = -o build/CDCD/mainCDCD src/CDCD/main.cpp -lcrypto -lssl # -l syslog # -pthread
 
+EAEA = -o build/EAEA/EAEA src/EAEA/EAEA.cpp
+ServerEAEA = -o build/EAEA/ServerEAEA src/EAEA/Server.cpp
+ClientEAEA = -o build/EAEA/ClientEAEA src/EAEA/Client.cpp
+FileManagerEAEA = -o build/EAEA/FileManagerEAEA src/EAEA/FileManager.cpp
 mainEAEA = -o build/EAEA/mainEAEA src/EAEA/main.cpp -lcrypto -lssl # -l syslog # -pthread
+
 test = -o build/cryptographer_test src/cryptographer_test.cpp -lcrypto -lssl # -l syslog
 
 cdcd:
 		mkdir -p build && mkdir -p build/CDCD && \
-		$(CC) $(CFLAGS) $(CDCD) $(ServerCDCD) $(ClientCDCD) $(CryptographerCDCD) $(MessageGeneratorCDCD) $(mainCDCD)
+		$(CC) $(FLAGS) $(CFLAGS) $(CDCD) $(ServerCDCD) $(ClientCDCD) $(CryptographerCDCD) $(MessageGeneratorCDCD) $(mainCDCD)
 
 eaea:
-		mkdir -p build && \
-		$(CC) $(CFLAGS) $(mainEAEA)
+		mkdir -p build && mkdir -p build/EAEA && \
+		$(CC) $(FLAGS) $(CFLAGS) $(EAEA) $(ServerEAEA) $(ClientEAEA) $(FileManagerEAEA)  $(mainEAEA)
 
 test:
 		mkdir -p build && \
@@ -46,7 +51,7 @@ generatorEAEA:
 		./build/message_generatorEAEA
 
 clean:
-		$(RM) build/* && rmdir build && clear
+		$(RM) build/CDCD/* && $(RM) build/EAEA/* && rmdir build/* && rmdir build && clear
 
 1: 
 		./build/CDCD/mainCDCD m 192.168.5.41 192.168.5.42

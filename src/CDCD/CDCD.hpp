@@ -17,9 +17,16 @@
 #include <thread>
 
 class CDCD {
+  private:
+    Server *server;
+    Client *client;
+    Cryptographer *cryptographer;
+    std::string type;
+    MessageGenerator generator;
+    const std::string PATH_USER =  "fabian.gonzalezrojas";
+
   public:
     CDCD(std::string type, std::string serverIP, std::string clientIP) {
-        // Sender
         if (type.compare("s") == 0) {
             this->client = new Client(serverIP, clientIP);
             this->server = NULL;
@@ -67,14 +74,6 @@ class CDCD {
     void errorLog() {
         this->writeLog("Runtime error: relaunching");
     }
-
-  private:
-    Server *server;
-    Client *client;
-    Cryptographer *cryptographer;
-    std::string type;
-    MessageGenerator generator;
-    const std::string PATH_USER =  "mariana.murilloquintana";
     
     bool send() {
         std::cout << "Send start\n";
@@ -98,7 +97,7 @@ class CDCD {
                             std::cout << "Sent: [" << message << "]\nLength: [" << message.length() << "]\n";
                             int file_count = std::stoi(last_msg_processed);
                             file_count++;
-                            last_msg_processed = convertToZeroPaddedString(file_count);
+                            last_msg_processed = generator.convertToZeroPaddedString(file_count);
                             FileManager::Write(last_msg_processed, message_count_path);
                             std::this_thread::sleep_for(std::chrono::minutes(1));
                         }
@@ -159,20 +158,7 @@ class CDCD {
         return false;
     }
 
-    std::string convertToZeroPaddedString(int number)
-    {
-        std::string numberString = std::to_string(number);
-        std::string zeroPaddedString = numberString;
-
-        // Agregar ceros a la izquierda si es necesario
-        while (zeroPaddedString.length() < 6)
-        {
-            zeroPaddedString = "0" + zeroPaddedString;
-        }
-
-        return zeroPaddedString;
-    }
-
+  private:
     void writeLog(const std::string message) {
         openlog("Program G4 [CDCD] ", LOG_PID, LOG_LOCAL4);
         syslog(LOG_NOTICE, "%s", message.c_str());
@@ -203,22 +189,16 @@ class CDCD {
         std::tm* currentDateTime = std::localtime(&currentTime);
         int currentHour = currentDateTime->tm_hour;
         int currentMinute = currentDateTime->tm_min;
-
-        // Especifica las horas y minutos deseados
         const std::vector<std::pair<int, int>> desiredTimes = {
             {0, 40}, {2, 40}, {4, 40}, {6, 40}, {8, 40}, {10, 40},
             {12, 40}, {14, 40}, {16, 40}, {18, 40}, {20, 40}, {22, 40}
         };
-
         auto desiredTime = std::find(desiredTimes.begin(), desiredTimes.end(), std::make_pair(currentHour, currentMinute));
         if (desiredTime != desiredTimes.end()) {
             std::string currentTimeStr = formatTime(currentHour, currentMinute);
             std::cout << "Current time is: " << currentTimeStr << std::endl;
             return true;
         }
-        //std::string currentTimeStr = formatTime(currentHour, currentMinute);
-        //std::cout << "Current time is: " << currentTimeStr << std::endl;
-
         return false;
     }
 

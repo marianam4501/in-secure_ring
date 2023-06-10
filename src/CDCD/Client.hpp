@@ -31,7 +31,6 @@ class Client {
         return -1;
       }
       // Seteando la ip de donde voy a mandar el mensaje
-      // Create socket
       memset(&clientAddress, 0, sizeof(clientAddress));
       clientAddress.sin_family = AF_INET;
       clientAddress.sin_port = htons(0);
@@ -47,12 +46,10 @@ class Client {
         std::cout << "\nInvalid address/ Address not supported \n";
         return -1;
       }
-      // Bind the socket to the client address
       if (bind(client_fd, (struct sockaddr *)&clientAddress, sizeof(clientAddress)) < 0) {
         std::cout << "Bind failed\n";
         return -1;
       }
-      // Connect to server
       if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
         std::cout << "\nConnection Failed \n";
         return -1;

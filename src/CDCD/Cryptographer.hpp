@@ -9,7 +9,7 @@
 #include <vector>
 
 class Cryptographer {
-public:
+  public:
     Cryptographer() {
         OpenSSL_add_all_algorithms();
         ERR_load_crypto_strings();

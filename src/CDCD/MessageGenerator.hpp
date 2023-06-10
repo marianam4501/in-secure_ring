@@ -29,18 +29,14 @@ class MessageGenerator {
     }
   }
 
-  private:
     std::string convertToZeroPaddedString(int number)
     {
         std::string numberString = std::to_string(number);
         std::string zeroPaddedString = numberString;
-
-        // Agregar ceros a la izquierda si es necesario
         while (zeroPaddedString.length() < 6)
         {
             zeroPaddedString = "0" + zeroPaddedString;
         }
-
         return zeroPaddedString;
     }
 };

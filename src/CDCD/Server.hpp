@@ -33,6 +33,7 @@ class Server {
         close(server_fd_);
     }
 
+  private:
     void prepareServer() {
         // Creating socket file descriptor
         if ((server_fd_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -57,6 +58,7 @@ class Server {
         }
     }
 
+  public:
     std::vector<unsigned char> start() {
         int addrlen = sizeof(address_);
         if ((new_socket_ = accept(server_fd_, (struct sockaddr*)&address_, (socklen_t*)&addrlen)) < 0) {

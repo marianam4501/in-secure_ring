@@ -153,7 +153,7 @@ class FileManager {
 
   private:
 	
-    const std::string PATH_USER = "fabian.gonzalezrojas";
+    const std::string PATH_USER = "mariana.murilloquintana";
 	void searchFiles(const fs::path& directory, const std::string& filename, std::vector<FoundFile>& foundFiles)
 	{
 		for (const auto& entry : fs::directory_iterator(directory))

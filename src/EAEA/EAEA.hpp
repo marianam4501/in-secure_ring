@@ -61,7 +61,7 @@ class EAEA {
 
   private:
   
-    const std::string PATH_USER =  "fabian.gonzalezrojas";
+    const std::string PATH_USER =  "mariana.murilloquintana";
     Server *server;
     Client *client;
     std::string type;
@@ -83,28 +83,37 @@ class EAEA {
                 std::vector<std::string> messages = fileManager.searchForMessages(directories);
                 for(int i = 0; i < messages.size(); ++i){
                     if(!messages.at(i).empty()){
+                        std::string logMessage;
                         std::vector<std::string> messageParts = fileManager.SplitMessageFile(messages.at(i));
-                        std::string last_msg_processed_path = "";
+                        std::string last_msg_processed_path = directories.at(i) + "/000000.txt";
+                        std::string statusFile = directories.at(i)+"/estado.txt";
                         if(validUsername(messageParts.front())){
-                            std::string stateFile = "/home/"+PATH_USER+"/EAEA/"+messageParts.front()+"/estado.txt";
                             std::string verifyResult = verifySignature(messages.at(i));
                             if(verifyResult == "Verified OK\n"){
-                                this->writeLog("The signature was verified and it is OK. The message remains intact and the user is who he/she claims to be.");
-                                this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
+                                logMessage = "The signature was verified and it is OK. The message remains intact and the user is who he/she claims to be.";
+                                this->writeLog(logMessage);
+                                this->writeStatusFile(logMessage+"\n",statusFile);
+                                logMessage = "Sending message from "+ messageParts.at(0)/*el usuario*/;
+                                this->writeLog(logMessage);
+                                this->writeStatusFile(logMessage+"\n",statusFile);
                                 std::cout << "Send start\n";
                                 if(this->client->send(messages.at(i)) == 0){
-                                    this->writeLog("Message sended");
+                                    logMessage = "Message sended";
+                                    this->writeLog(logMessage);
+                                    this->writeStatusFile(logMessage+"\n",statusFile);
                                     std::cout << "Sended: [" << messages.at(i) << "]\n";
                                     std::cout << "Length: [" << messages.at(i).length() << "]\n";
                                 }
                             } else if (verifyResult == "Verification Failure\n"){
-                                this->writeLog("The signature was verified and it is invalid. Message discarded.");
+                                logMessage = "The signature was verified and it is invalid. Message discarded.";
+                                this->writeLog(logMessage);
+                                this->writeStatusFile(logMessage+"\n",statusFile);
                             }
-                            last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + messageParts.at(0) + "/000000.txt";
                         } else {
-                            last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + directories.at(i) + "/000000.txt";
                             std::cout << "Invalid credentials." << std::endl;
-                            this->writeLog("Invalid credentials. Message discarded.");
+                            logMessage = "Invalid credentials. Message discarded.";
+                            this->writeLog(logMessage);
+                            this->writeStatusFile(logMessage+"\n",statusFile);
                         }
                         std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
                         if(last_msg_processed != ""){
@@ -113,7 +122,6 @@ class EAEA {
                             last_msg_processed = convertToZeroPaddedString(file_count);
                             fileManager.Write(last_msg_processed, last_msg_processed_path);
                         }
-                        std::cout << "["<<last_msg_processed<<"]" << std::endl;
                     }
                 }
             } catch (const std::exception& e) {
@@ -165,12 +173,22 @@ class EAEA {
                 std::string received_message(message.begin(), message.end());
                 std::vector<std::string> messageParts = fileManager.SplitMessageFile(received_message);
                 std::string verifyResult = verifySignature(received_message);
+                std::string statusFilePath = "/home/"+PATH_USER+"/EAEA/"+messageParts.front()+"/estado.txt";
+                std::string logMessage;
                 if(verifyResult == "Verified OK\n"){
-                    this->writeLog("The signature was verified and it is OK. The message remains intact.");
-                    this->writeLog("Receiving message from "+ messageParts.at(0)/*el usuario*/);
+                    logMessage = "The signature was verified and it is OK. The message remains intact.";
+                    this->writeLog(logMessage);
+                    this->writeStatusFile(logMessage+"\n",statusFilePath);
+                    logMessage = "Receiving message from "+ messageParts.at(0);
+                    this->writeLog(logMessage);
+                    this->writeStatusFile(logMessage+"\n",statusFilePath);
                     fileManager.saveMessage(received_message);
-                    this->writeLog("Message stored");
+                    logMessage = "Message stored";
+                    this->writeLog(logMessage);
+                    this->writeStatusFile(logMessage+"\n",statusFilePath);
                     std::cout << "Received: [" << received_message << "]\n";
+                    logMessage = "Received: ["+received_message+"]\n";
+                    this->writeStatusFile(logMessage,statusFilePath);
                 } else if (verifyResult == "Verification Failure\n"){
                     this->writeLog("The signature was verified and it is invalid. Message discarded.");
                 }
@@ -245,6 +263,11 @@ class EAEA {
     bool validUsername(std::string username){
         auto userFound = std::find(usernames.begin(), usernames.end(), username);
         return userFound != usernames.end();
+    }
+
+    void writeStatusFile(const std::string message, std::string statusFilePath){
+        std::string finalMessage = "Program G4 [EAEA] " + message;
+        fileManager.WriteAppend(finalMessage,statusFilePath);
     }
 };
 

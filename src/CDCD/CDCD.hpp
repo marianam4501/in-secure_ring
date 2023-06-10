@@ -86,11 +86,11 @@ class CDCD {
                 if(!message.empty()){
                     std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
                     this->writeLog("Sending message");
-                    this->writeStateFile("Sending message: " + message + "\n");
+                    this->writeStatusFile("Sending message: " + message + "\n");
                     message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
                     if(this->client->send(message) == 0){
                         this->writeLog("Message sended");
-                        this->writeStateFile("Message sended.\n");
+                        this->writeStatusFile("Message sended.\n");
                         std::cout << "Sended: [" << message << "]\nLength: [" << message.length() << "]\n";
                         int file_count = std::stoi(last_msg_processed);
                         file_count++;
@@ -138,10 +138,10 @@ class CDCD {
                 std::cout << "Length received: [" << received_message.length() << "]\n";
                 std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
                 this->writeLog("Message received");
-                this->writeStateFile("Message received: "+decrypted_message+"\n");
+                this->writeStatusFile("Message received: "+decrypted_message+"\n");
                 generator.createMessage(decrypted_message);
                 this->writeLog("Message stored");
-                this->writeStateFile("Message stored\n");
+                this->writeStatusFile("Message stored\n");
                 std::cout << "Received: [" << decrypted_message << "]\n";
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
@@ -173,10 +173,10 @@ class CDCD {
         closelog();
     }
 
-    void writeStateFile(const std::string message){
+    void writeStatusFile(const std::string message){
         std::string finalMessage = "Program G4 [CDCD] " + message;
-        std::string stateFilePath = "/home/"+PATH_USER+"/CDCD/estado.txt";
-        FileManager::WriteAppend(finalMessage,stateFilePath);
+        std::string statusFilePath = "/home/"+PATH_USER+"/CDCD/estado.txt";
+        FileManager::WriteAppend(finalMessage,statusFilePath);
     }
 };
 

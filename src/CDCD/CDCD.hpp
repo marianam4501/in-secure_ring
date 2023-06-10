@@ -74,7 +74,7 @@ class CDCD {
     Cryptographer *cryptographer;
     std::string type;
     MessageGenerator generator;
-    const std::string PATH_USER =  "fabian.gonzalezrojas";
+    const std::string PATH_USER =  "mariana.murilloquintana";
     
     bool send() {
         std::cout << "Send start\n";
@@ -100,12 +100,10 @@ class CDCD {
                             file_count++;
                             last_msg_processed = convertToZeroPaddedString(file_count);
                             FileManager::Write(last_msg_processed, message_count_path);
+                            std::this_thread::sleep_for(std::chrono::minutes(1));
                         }
                     }
-                } else {
-                    // Si no es la hora deseada, hacer que el programa duerma
-                    std::this_thread::sleep_for(std::chrono::minutes(60));
-                }
+                } 
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tsendCDCD error" << std::endl;
@@ -194,6 +192,12 @@ class CDCD {
         FileManager::WriteAppend(finalMessage,statusFilePath);
     }
 
+    std::string formatTime(int hour, int minute) {
+        std::string formattedHour = hour < 10 ? "0" + std::to_string(hour) : std::to_string(hour);
+        std::string formattedMinute = minute < 10 ? "0" + std::to_string(minute) : std::to_string(minute);
+        return formattedHour + ":" + formattedMinute;
+    }
+
     bool isDesiredTime() {
         std::time_t currentTime = std::time(nullptr);
         std::tm* currentDateTime = std::localtime(&currentTime);
@@ -202,13 +206,22 @@ class CDCD {
 
         // Especifica las horas y minutos deseados
         const std::vector<std::pair<int, int>> desiredTimes = {
-            {0, 40}, {3, 10}, {4, 40}, {6, 40}, {8, 40}, {10, 40},
+            {0, 40}, {2, 40}, {4, 40}, {6, 40}, {8, 40}, {10, 40},
             {12, 40}, {14, 40}, {16, 40}, {18, 40}, {20, 40}, {22, 40}
         };
 
-        // Verifica si la hora y los minutos actuales coinciden con alguno de los tiempos deseados
-        return std::find(desiredTimes.begin(), desiredTimes.end(), std::make_pair(currentHour, currentMinute)) != desiredTimes.end();
+        auto desiredTime = std::find(desiredTimes.begin(), desiredTimes.end(), std::make_pair(currentHour, currentMinute));
+        if (desiredTime != desiredTimes.end()) {
+            std::string currentTimeStr = formatTime(currentHour, currentMinute);
+            std::cout << "Current time is: " << currentTimeStr << std::endl;
+            return true;
+        }
+        //std::string currentTimeStr = formatTime(currentHour, currentMinute);
+        //std::cout << "Current time is: " << currentTimeStr << std::endl;
+
+        return false;
     }
+
 };
 
 #endif

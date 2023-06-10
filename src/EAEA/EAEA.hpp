@@ -16,7 +16,7 @@
 
 class EAEA {
   private:
-    const std::string PATH_USER =  "fabian.gonzalezrojas";
+    const std::string PATH_USER =  "mariana.murilloquintana";
     Server *server;
     Client *client;
     std::string type;

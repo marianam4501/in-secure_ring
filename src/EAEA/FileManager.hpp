@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 
 class FileManager {
   private:
-    const std::string PATH_USER = "fabian.gonzalezrojas";
+    const std::string PATH_USER = "mariana.murilloquintana";
 
   public:
     struct FoundFile

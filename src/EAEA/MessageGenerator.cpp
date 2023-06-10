@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 
-const std::string PATH_USER =  "fabian.gonzalezrojas";
+const std::string PATH_USER =  "mariana.murilloquintana";
 
 std::string getCommandOutput(const std::string& command);
 

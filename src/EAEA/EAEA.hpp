@@ -79,37 +79,40 @@ class EAEA {
         const bool stop = false;
         while (!stop) {
             try {
-                std::vector<std::string> messages = fileManager.searchForMessages();
-                for(const auto& message : messages){
-                    if(!message.empty()){
-                        std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
+                std::vector<std::string> directories;
+                std::vector<std::string> messages = fileManager.searchForMessages(directories);
+                for(int i = 0; i < messages.size(); ++i){
+                    if(!messages.at(i).empty()){
+                        std::vector<std::string> messageParts = fileManager.SplitMessageFile(messages.at(i));
+                        std::string last_msg_processed_path = "";
                         if(validUsername(messageParts.front())){
                             std::string stateFile = "/home/"+PATH_USER+"/EAEA/"+messageParts.front()+"/estado.txt";
-                            std::string verifyResult = verifySignature(message);
+                            std::string verifyResult = verifySignature(messages.at(i));
                             if(verifyResult == "Verified OK\n"){
                                 this->writeLog("The signature was verified and it is OK. The message remains intact and the user is who he/she claims to be.");
                                 this->writeLog("Sending message from "+ messageParts.at(0)/*el usuario*/);
                                 std::cout << "Send start\n";
-                                if(this->client->send(message) == 0){
+                                if(this->client->send(messages.at(i)) == 0){
                                     this->writeLog("Message sended");
-                                    std::cout << "Sended: [" << message << "]\n";
-                                    std::cout << "Length: [" << message.length() << "]\n";
+                                    std::cout << "Sended: [" << messages.at(i) << "]\n";
+                                    std::cout << "Length: [" << messages.at(i).length() << "]\n";
                                 }
                             } else if (verifyResult == "Verification Failure\n"){
                                 this->writeLog("The signature was verified and it is invalid. Message discarded.");
                             }
+                            last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + messageParts.at(0) + "/000000.txt";
                         } else {
+                            last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + directories.at(i) + "/000000.txt";
                             std::cout << "Invalid credentials." << std::endl;
                             this->writeLog("Invalid credentials. Message discarded.");
                         }
-                        std::string last_msg_processed_path = "/home/"+PATH_USER+"/EAEA" + messageParts.at(0) + "/000000.txt";
                         std::string last_msg_processed = fileManager.Read(last_msg_processed_path);
-                        /*if(last_msg_processed == ""){
+                        if(last_msg_processed != ""){
                             int file_count = std::stoi(last_msg_processed);
                             file_count++;
                             last_msg_processed = convertToZeroPaddedString(file_count);
                             fileManager.Write(last_msg_processed, last_msg_processed_path);
-                        }*/
+                        }
                         std::cout << "["<<last_msg_processed<<"]" << std::endl;
                     }
                 }
@@ -229,8 +232,8 @@ class EAEA {
 
     std::string verifySignature(std::string message){
         std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
-        std::string certPath = "/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/certs/"+messageParts.at(0)+".crt";
-        fileManager.Write(messageParts.at(1),"/home/fabian.gonzalezrojas/in-secure_ring/src/EAEA/ca/private/firma.sha256");
+        std::string certPath = "/home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/certs/"+messageParts.at(0)+".crt";
+        fileManager.Write(messageParts.at(1),"/home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256");
         std::string extractPubKey = this->extractPubKeyPt1 + certPath + this->extractPubKeyPt2;
         std::system(extractPubKey.c_str());
         std::string verify = verifyCommandPt1 + messageParts.at(2) + verifyCommandPt2;

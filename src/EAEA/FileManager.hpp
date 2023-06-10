@@ -18,7 +18,7 @@ class FileManager {
         std::string filePath;
     };
 
-	std::vector<std::string> searchForMessages(){
+	std::vector<std::string> searchForMessages(std::vector<std::string>& directories){
 		std::string directoryPath = "/home/"+PATH_USER+"/EAEA"; ///ruta/al/directorio
 		std::string lastFileProcessed = "000000.txt"; // Reemplaza con el nombre del archivo que estás buscando
 
@@ -44,6 +44,7 @@ class FileManager {
 					if(messageContent != ""){
 						// std::cout << "Next file content: "<< messageContent << std::endl; 
 						messages.push_back(messageContent);
+						directories.push_back(file.directoryPath);
 					}
 					// std::cout << std::endl;
 				}

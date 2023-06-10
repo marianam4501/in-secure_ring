@@ -12,6 +12,9 @@
 #include "FileManager.hpp"
 #include "MessageGenerator.hpp"
 #include <vector>
+#include <ctime>
+#include <chrono>
+#include <thread>
 
 class CDCD {
   public:
@@ -80,24 +83,29 @@ class CDCD {
         const bool stop = false;
         while (!stop) {
             try {
-                std::string last_msg_processed = FileManager::Read(message_count_path);
-                std::string message = "";
-                message = FileManager::Read(path+last_msg_processed+".txt");
-                if(!message.empty()){
-                    std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
-                    this->writeLog("Sending message");
-                    this->writeStatusFile("Sending message: " + message + "\n");
-                    message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
-                    if(this->client->send(message) == 0){
-                        this->writeLog("Message sended");
-                        this->writeStatusFile("Message sended.\n");
-                        std::cout << "Sended: [" << message << "]\nLength: [" << message.length() << "]\n";
-                        int file_count = std::stoi(last_msg_processed);
-                        file_count++;
-                        last_msg_processed = convertToZeroPaddedString(file_count);
-                        FileManager::Write(last_msg_processed, message_count_path);
+                if (isDesiredTime()) {
+                    std::string last_msg_processed = FileManager::Read(message_count_path);
+                    std::string message = "";
+                    message = FileManager::Read(path+last_msg_processed+".txt");
+                    if (!message.empty()) {
+                        std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
+                        this->writeLog("Sending message");
+                        this->writeStatusFile("Sending message: " + message + "\n");
+                        message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
+                        if (this->client->send(message) == 0) {
+                            this->writeLog("Message sent");
+                            this->writeStatusFile("Message sent.\n");
+                            std::cout << "Sent: [" << message << "]\nLength: [" << message.length() << "]\n";
+                            int file_count = std::stoi(last_msg_processed);
+                            file_count++;
+                            last_msg_processed = convertToZeroPaddedString(file_count);
+                            FileManager::Write(last_msg_processed, message_count_path);
+                        }
                     }
-                } 
+                } else {
+                    // Si no es la hora deseada, hacer que el programa duerma
+                    std::this_thread::sleep_for(std::chrono::minutes(60));
+                }
             } catch (const std::exception& e) {
                 std::cerr << e.what() << std::endl;
                 std::cerr << "\t\tsendCDCD error" << std::endl;
@@ -174,9 +182,32 @@ class CDCD {
     }
 
     void writeStatusFile(const std::string message){
-        std::string finalMessage = "Program G4 [CDCD] " + message;
         std::string statusFilePath = "/home/"+PATH_USER+"/CDCD/estado.txt";
+        std::time_t now = std::time(nullptr);
+        std::string currentTime = std::ctime(&now);
+        size_t pos = currentTime.find('\n');
+        if (pos != std::string::npos) {
+            // Eliminar el carácter de salto de línea
+            currentTime.erase(pos);
+        }
+        std::string finalMessage = "Program G4 [CDCD] " +currentTime +": "+ message;
         FileManager::WriteAppend(finalMessage,statusFilePath);
+    }
+
+    bool isDesiredTime() {
+        std::time_t currentTime = std::time(nullptr);
+        std::tm* currentDateTime = std::localtime(&currentTime);
+        int currentHour = currentDateTime->tm_hour;
+        int currentMinute = currentDateTime->tm_min;
+
+        // Especifica las horas y minutos deseados
+        const std::vector<std::pair<int, int>> desiredTimes = {
+            {0, 40}, {3, 10}, {4, 40}, {6, 40}, {8, 40}, {10, 40},
+            {12, 40}, {14, 40}, {16, 40}, {18, 40}, {20, 40}, {22, 40}
+        };
+
+        // Verifica si la hora y los minutos actuales coinciden con alguno de los tiempos deseados
+        return std::find(desiredTimes.begin(), desiredTimes.end(), std::make_pair(currentHour, currentMinute)) != desiredTimes.end();
     }
 };
 

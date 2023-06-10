@@ -15,6 +15,21 @@
 #include <ctime>
 
 class EAEA {
+  private:
+    const std::string PATH_USER =  "mariana.murilloquintana";
+    Server *server;
+    Client *client;
+    std::string type;
+    FileManager fileManager;
+    std::vector<std::string> usernames = {"manuel.arroyo", "rodrigo.piedra", "fabian.gonzalezrojas", 
+        "cesar.lopezurena", "nayeri.azofeifa", "leonel.campos", "angie.castillocampos", "mariana.murilloquintana", 
+        "jeremy.vargasartavia", "valery.murcia"};
+
+    const std::string extractPubKeyPt1 = "openssl x509 -pubkey -noout -in ";
+    const std::string extractPubKeyPt2 = " > /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem";
+    const std::string verifyCommandPt1 = "bash -c \"echo -n '";
+    const std::string verifyCommandPt2 = "' | openssl dgst -sha256 -verify <(openssl rsa -pubin -inform PEM -in /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem) -signature /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256\"";
+
   public:
     EAEA(std::string type, std::string serverIP, std::string clientIP) {
         // Sender
@@ -60,21 +75,6 @@ class EAEA {
         this->writeLog("Runtime error: relaunching");
     }
 
-  private:
-  
-    const std::string PATH_USER =  "mariana.murilloquintana";
-    Server *server;
-    Client *client;
-    std::string type;
-    FileManager fileManager;
-    std::vector<std::string> usernames = {"manuel.arroyo", "rodrigo.piedra", "fabian.gonzalezrojas", 
-        "cesar.lopezurena", "nayeri.azofeifa", "leonel.campos", "angie.castillocampos", "mariana.murilloquintana", 
-        "jeremy.vargasartavia", "valery.murcia"};
-
-    const std::string extractPubKeyPt1 = "openssl x509 -pubkey -noout -in ";
-    const std::string extractPubKeyPt2 = " > /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem";
-    const std::string verifyCommandPt1 = "bash -c \"echo -n '";
-    const std::string verifyCommandPt2 = "' | openssl dgst -sha256 -verify <(openssl rsa -pubin -inform PEM -in /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem) -signature /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256\"";
     bool send() {
         std::cout << "Send start\n";
         const bool stop = false;
@@ -123,7 +123,7 @@ class EAEA {
                             if(last_msg_processed != ""){
                                 int file_count = std::stoi(last_msg_processed);
                                 file_count++;
-                                last_msg_processed = convertToZeroPaddedString(file_count);
+                                last_msg_processed = fileManager.convertToZeroPaddedString(file_count);
                                 fileManager.Write(last_msg_processed, last_msg_processed_path);
                             }
                         } else {
@@ -220,20 +220,6 @@ class EAEA {
         }
         return tokens;
     } 
-
-    std::string convertToZeroPaddedString(int number)
-    {
-        std::string numberString = std::to_string(number);
-        std::string zeroPaddedString = numberString;
-
-        // Agregar ceros a la izquierda si es necesario
-        while (zeroPaddedString.length() < 6)
-        {
-            zeroPaddedString = "0" + zeroPaddedString;
-        }
-
-        return zeroPaddedString;
-    }
 
     void writeLog(const std::string message) {
         openlog("Program [EAEA] ", LOG_PID, LOG_LOCAL4);

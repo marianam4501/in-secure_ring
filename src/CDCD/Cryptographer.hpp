@@ -1,3 +1,6 @@
+#ifndef CRYPTOGRAPHER_HPP
+#define CRYPTOGRAPHER_HPP
+
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
@@ -105,3 +108,5 @@ class Cryptographer {
         return decrypted;
     }
 };
+
+#endif

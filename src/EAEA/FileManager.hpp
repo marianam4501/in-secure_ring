@@ -11,7 +11,10 @@
 namespace fs = std::filesystem;
 
 class FileManager {
- public:
+  private:
+    const std::string PATH_USER = "fabian.gonzalezrojas";
+
+  public:
     struct FoundFile
     {
         std::string directoryPath;
@@ -151,9 +154,18 @@ class FileManager {
 		return true;
 	}
 
+	std::string convertToZeroPaddedString(int number)
+    {
+        std::string numberString = std::to_string(number);
+        std::string zeroPaddedString = numberString;
+        while (zeroPaddedString.length() < 6)
+        {
+            zeroPaddedString = "0" + zeroPaddedString;
+        }
+        return zeroPaddedString;
+    }
+
   private:
-	
-    const std::string PATH_USER = "mariana.murilloquintana";
 	void searchFiles(const fs::path& directory, const std::string& filename, std::vector<FoundFile>& foundFiles)
 	{
 		for (const auto& entry : fs::directory_iterator(directory))
@@ -171,19 +183,6 @@ class FileManager {
 			}
 		}
 	}
-	std::string convertToZeroPaddedString(int number)
-    {
-        std::string numberString = std::to_string(number);
-        std::string zeroPaddedString = numberString;
-
-        // Agregar ceros a la izquierda si es necesario
-        while (zeroPaddedString.length() < 6)
-        {
-            zeroPaddedString = "0" + zeroPaddedString;
-        }
-
-        return zeroPaddedString;
-    }
 };
 
 #endif

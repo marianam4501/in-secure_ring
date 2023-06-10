@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     std::string type = argv[1];
     std::string serverIP = argv[2];
     std::string clientIP = argv[3];
-    std::cout << "Input: [" << type << "] " << "[" << serverIP << "]" << "[" << clientIP << "]\n\n";
+    std::cout << "Inputs: " << --argc << " [" << type << "] " << "[" << serverIP << "] " << "[" << clientIP << "]\n\n";
     CDCD channel(type, serverIP, clientIP);
     const bool stop = false;
     while (!stop)

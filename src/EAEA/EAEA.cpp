@@ -214,8 +214,8 @@ std::string EAEA::getCommandOutput(const std::string& command) {
 
 std::string EAEA::verifySignature(std::string message){
     std::vector<std::string> messageParts = fileManager.SplitMessageFile(message);
-    std::string certPath = "/home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/certs/"+messageParts.at(0)+".crt";
-    fileManager.Write(messageParts.at(1),"/home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256");
+    std::string certPath = "/home/"+PATH_USER+"/ca/certs/"+messageParts.at(0)+".crt";
+    fileManager.Write(messageParts.at(1),"/home/"+PATH_USER+"/ca/private/firma.sha256");
     std::string extractPubKey = this->extractPubKeyPt1 + certPath + this->extractPubKeyPt2;
     std::system(extractPubKey.c_str());
     std::string verify = verifyCommandPt1 + messageParts.at(2) + verifyCommandPt2;

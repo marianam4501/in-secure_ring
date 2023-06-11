@@ -22,19 +22,19 @@ int main(){
         std::getline(std::cin, message);
         std::cout << std::endl;
         FileManager fileManager;
-        std::string certPath = "/home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/certs/"+username+".crt";
+        std::string certPath = "/home/"+PATH_USER+"/ca/certs/"+username+".crt";
         std::string keyPath = "";
         std::cout << "Enter the path of your key: ";
         std::getline(std::cin, keyPath);
         std::cout << std::endl;
         //sign message
         std::string signature;
-        const std::string command = "echo -n " + message + " | openssl dgst -sha256 -sign " + keyPath + " -out /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256";
+        const std::string command = "echo -n " + message + " | openssl dgst -sha256 -sign " + keyPath + " -out /home/"+PATH_USER+"/ca/private/firma.sha256";
         //std::cout << command <<std::endl;
         const std::string fullCommand = "bash -c \"" + command + "\"";
         std::system(fullCommand.c_str());
 
-        signature = fileManager.Read("/home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256");
+        signature = fileManager.Read("/home/"+PATH_USER+"/ca/private/firma.sha256");
 
         //std::cout << signature << std::endl;
         if (!signature.empty()) {

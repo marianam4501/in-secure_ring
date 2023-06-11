@@ -62,3 +62,6 @@ clean:
 
 55: 
 		./build/EAEA/mainEAEA m 192.168.5.45 192.168.5.41
+
+compiler:
+		scl enable devtoolset-9 bash

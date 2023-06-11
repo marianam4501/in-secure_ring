@@ -26,9 +26,9 @@ class EAEA {
         "jeremy.vargasartavia", "valery.murcia"};
 
     const std::string extractPubKeyPt1 = "openssl x509 -pubkey -noout -in ";
-    const std::string extractPubKeyPt2 = " > /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem";
+    const std::string extractPubKeyPt2 = " > /home/"+PATH_USER+"/ca/private/pubkey.pem";
     const std::string verifyCommandPt1 = "bash -c \"echo -n '";
-    const std::string verifyCommandPt2 = "' | openssl dgst -sha256 -verify <(openssl rsa -pubin -inform PEM -in /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/pubkey.pem) -signature /home/"+PATH_USER+"/in-secure_ring/src/EAEA/ca/private/firma.sha256\"";
+    const std::string verifyCommandPt2 = "' | openssl dgst -sha256 -verify <(openssl rsa -pubin -inform PEM -in /home/"+PATH_USER+"/ca/private/pubkey.pem) -signature /home/"+PATH_USER+"/ca/private/firma.sha256\"";
 
   public:
     EAEA(std::string type, std::string serverIP, std::string clientIP);

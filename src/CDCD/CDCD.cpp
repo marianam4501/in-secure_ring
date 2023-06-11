@@ -64,7 +64,7 @@ bool CDCD::send() {
                     std::cout<<"Sending "<<last_msg_processed<<".txt..."<<std::endl;
                     this->writeLog("Sending message");
                     this->writeStatusFile("Sending message: " + message + "\n");
-                    message = this->cryptographer->encrypt(message,"./src/public_key.pem"); 
+                    message = this->cryptographer->encrypt(message,"/home/fabian.gonzalezrojas/public_key.pem"); 
                     if (this->client->send(message) == 0) {
                         this->writeLog("Message sent");
                         this->writeStatusFile("Message sent.\n");
@@ -115,7 +115,7 @@ bool CDCD::receive() {
             std::vector<unsigned char> message = this->server->start();
             std::string received_message(message.begin(), message.end());
             std::cout << "Length received: [" << received_message.length() << "]\n";
-            std::string decrypted_message = this->cryptographer->decrypt(message,"./src/private_key.pem");
+            std::string decrypted_message = this->cryptographer->decrypt(message,"/home/fabian.gonzalezrojas/private_key.pem");
             this->writeLog("Message received");
             this->writeStatusFile("Message received: "+decrypted_message+"\n");
             generator.createMessage(decrypted_message);

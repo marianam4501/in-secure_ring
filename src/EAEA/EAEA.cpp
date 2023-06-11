@@ -42,6 +42,7 @@ bool EAEA::run() {
 
 void EAEA::errorLog() {
     this->writeLog("Runtime error: relaunching");
+    sleep(1);
 }
 
 bool EAEA::send() {
@@ -107,6 +108,7 @@ bool EAEA::send() {
             std::cerr << "\t\tsendEAEA error" << std::endl;
             return false;
         }
+        sleep(1);
     }
     std::cout << "Send End\n";
     return false;
@@ -137,6 +139,7 @@ bool EAEA::resend() {
             std::cerr << "\t\tresendEAEA error" << std::endl;
             return false;
         }
+        sleep(1);
     }
     std::cout << "Resend End\n";
     return false;
@@ -175,6 +178,7 @@ bool EAEA::receive() {
             std::cerr << "\t\treceiveEAEA error" << std::endl;
             return false;
         }
+        sleep(1);
     }
     std::cout << "Receive End\n";
     return false;

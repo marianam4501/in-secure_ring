@@ -47,6 +47,7 @@ bool CDCD::run() {
 
 void CDCD::errorLog() {
     this->writeLog("Runtime error: relaunching");
+    sleep(1);
 }
 
 bool CDCD::send() {
@@ -82,6 +83,7 @@ bool CDCD::send() {
             std::cerr << "\t\tsendCDCD error" << std::endl;
             return false;
         }
+        sleep(1);
     }
     std::cout << "Send End\n";
     return false;
@@ -102,6 +104,7 @@ bool CDCD::resend() {
             std::cerr << "\t\tresendCDCD error" << std::endl;
             return false;
         }
+        sleep(1);
     }
     std::cout << "Resend End\n";
     return false;
@@ -127,6 +130,7 @@ bool CDCD::receive() {
             std::cerr << "\t\treceiveCDCD error" << std::endl;
             return false;
         }
+        sleep(1);
     }
     std::cout << "Receive End\n";
     return false;

@@ -103,35 +103,52 @@ openssl ca -config ca.cnf -in ../fabian.csr -out certs/fabian.crt
 
 ## Flujo CDCD
 Paso 1: Se agrega un mensaje al directorio donde se almacenan los mensajes a enviar por el canal en la máquina desde la cual se van a enviar. 
-Esto se puede hacer utilizando la clase MessageGenerator. Para utilizarla, se puede utilizar el Makefile:  
-make messageGenerator, para compilar  
-make generator, para generar un mensaje.  
   
-Paso 2: Se corre el programa que va a recibir en una máquina primero, luego la máquina intermediaria y, por último, la máquina que va a enviar los mensajes.  
-Esto se puede hacer de la siguiente manera:  
-Receiver:  
-./build/mainCDCD s Argumento_innecesario 192.168.5.42  
-  
-Middle:  
-./build/mainCDCD m 192.168.5.42 192.168.5.43  
-  
-Sender:  
-./build/mainCDCD s Argumento_innecesario 192.168.5.42  
-  
+Paso 2: Se corre el programa que va a recibir en una máquina primero, luego las máquinas intermedias y, por último, la máquina que va a enviar los mensajes.  
+
+El programa recibe 3 argumentos:
+
+Primer argumento:
+'s' - sender (indica que es la computadora donde salen los mensajes)
+'m' - middle (indica que es una computadora que reenvia los mensajes)
+'r' - receiver (indica que es la computadora que recibe los mensajes)
+
+Segundo argumento:
+Ip de la computadora actual
+
+Tercer argumento:
+Ip de la computadora siguiente
+
 Se debe indicar la IP del cliente y del servidor para cada máquina. En las máquinas que reciben mensajes, solo es necesario incluir la IP por donde se van a recibir los mensajes.
-En el caso de las máquinas intermediarias, es necesario agregar ambas direcciones IP. Y para la máquina que envía, es necesario colocar la IP por la cual se van a enviar los mensajes.  
+En el caso de las máquinas intermediarias y la que envia los mensajes, es necesario agregar ambas direcciones IP.
 
 Paso 3: Una vez que ya se corren los programas en las distintas máquinas, se empiezan a enviar los mensajes.  
 La máquina que envía, lee un mensaje del directorio y lo encripta. Una vez encriptado, el mensaje es enviado a la siguiente máquina. Las máquinas intermediarias lo reciben y lo reenvian a la siguiente.  
 
 Paso 4: Cuando el mensaje llega al final del anillo, a la máquina destino, el mensaje es desencriptado y guardado en el directorio correspondiente.
 
+Se puede utilizar make para acelerar el proceso:
+
+make 1 - primera máquina
+make 2 - segunda máquina
+make 3 - tercera máquina
+make 4 - cuarta máquina
+make 5 - quinta máquina
+
 ## Flujo EAEA
 Paso 1: Un usuario ingresa un nombre, un sha y un mensaje. El sha y el mensaje van firmados con el fin de confirmar la identidad de la persona (autenticación).  
 Paso 2: El programa lee el archivo y verifica la identidad de la persona. Verifica si es quien dice ser. Se desencripta el mensaje y el sha.  
 Paso 3: Se verifica que el mensaje no haya sido modificado. Se utiliza el algoritmo sha para hashear el mensaje en texto y se compara con el sha para garantizar que no haya sido modificado.  
 Paso 4: Una vez realizadas esas verificaciones, se reenvía el mensaje por la red y se repite el paso 3 en cada máquina.  
-Paso 5: Cuando el mensaje llega a la última máquina y se realizan las verificaciones correspondientes, si no hay ningun problema de integridad, el mensaje se guarda en el directorio correspondiente.  
+Paso 5: Cuando el mensaje llega a la última máquina y se realizan las verificaciones correspondientes, si no hay ningun problema de integridad, el mensaje se guarda en el directorio correspondiente. 
+
+Se puede utilizar make para acelerar el proceso:
+
+make 11 - primera máquina
+make 22 - segunda máquina
+make 33 - tercera máquina
+make 44 - cuarta máquina
+make 55 - quinta máquina
 
 ### ¿Qué debo hacer para verificar la identidad de la persona?
 Una vez creada la autoridad certificadora, firmo las peticiones de certificados que enviaron los compañeros. Esos certificados se suben en un zip a mediación de manera que todos tengan acceso a sus certificados y puedan ingresar mensajes para ser procesados.  
